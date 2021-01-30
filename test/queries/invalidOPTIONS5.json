@@ -1,0 +1,19 @@
+{
+    "title": "ORDER contains invalid key",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_avg": 97
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ],
+            "ORDER": "courses_average"
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

@@ -1,0 +1,17 @@
+{
+    "title": "QUERY is a JSON array",
+    "query": [
+        {
+            "GT": {
+                "courses_avg": 97
+            }
+        },
+        {
+            "IS": {
+                "courses_dept": "adhe"
+            }
+        }
+    ],
+    "isQueryValid": false,
+    "result": "InsightError"
+}

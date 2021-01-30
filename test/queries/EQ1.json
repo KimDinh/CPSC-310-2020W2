@@ -1,0 +1,19 @@
+{
+    "title": "courses_pass key in EQ",
+    "query": {
+        "WHERE": {
+            "EQ": {
+                "courses_pass": 500
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_pass"
+            ],
+            "ORDER": "courses_pass"
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"japn","courses_pass":500},{"courses_dept":"fnh","courses_pass":500},{"courses_dept":"biol","courses_pass":500}]
+}

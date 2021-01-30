@@ -1,0 +1,29 @@
+{
+    "title": "inputstring for title in SCOMPARISON contains *",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "GT": {
+                        "courses_avg": 94
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_title": "*mp*"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id",
+                "courses_title",
+                "courses_avg"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"cpsc","courses_id":"503","courses_title":"computl ling 1","courses_avg":94.5},{"courses_dept":"cpsc","courses_id":"503","courses_title":"computl ling 1","courses_avg":94.5},{"courses_dept":"epse","courses_id":"320","courses_title":"tchg st visl imp","courses_avg":95.27},{"courses_dept":"epse","courses_id":"320","courses_title":"tchg st visl imp","courses_avg":95.27},{"courses_dept":"epse","courses_id":"415","courses_title":"tech for vis imp","courses_avg":95.67},{"courses_dept":"epse","courses_id":"415","courses_title":"tech for vis imp","courses_avg":95.67},{"courses_dept":"epse","courses_id":"545","courses_title":"ind skl vis imp","courses_avg":94.67},{"courses_dept":"epse","courses_id":"545","courses_title":"ind skl vis imp","courses_avg":94.67}]
+}

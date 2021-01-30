@@ -1,0 +1,23 @@
+{
+    "title": "ORDER is an array",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_avg": 97
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_pass",
+                "courses_avg"
+            ],
+            "ORDER": [
+                "courses_avg",
+                "courses_pass"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

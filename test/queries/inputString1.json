@@ -1,0 +1,18 @@
+{
+    "title": "inputstring in SCOMPARISON contains * at the end",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_dept": "abn*"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_uuid"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"aanb","courses_uuid":"31379"},{"courses_dept":"aanb","courses_uuid":"31380"},{"courses_dept":"aanb","courses_uuid":"31381"},{"courses_dept":"aanb","courses_uuid":"31382"}]
+}

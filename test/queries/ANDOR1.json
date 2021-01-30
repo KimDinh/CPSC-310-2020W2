@@ -1,0 +1,38 @@
+{
+    "title": "nested AND, OR",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "OR": [
+                        {
+                            "IS": {
+                                "courses_instructor": "kiczales, gregor"
+                            }
+                        },
+                        {
+                            "GT": {
+                                "courses_fail": 50
+                            }
+                        }
+                    ]
+                },
+                {
+                    "IS": {
+                        "courses_dept": "cpsc"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_title",
+                "courses_year",
+                "courses_fail"
+            ],
+            "ORDER": "courses_fail"
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2014,"courses_fail":1},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2015,"courses_fail":1},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2010,"courses_fail":2},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2009,"courses_fail":3},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2011,"courses_fail":4},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2009,"courses_fail":6},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2012,"courses_fail":7},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2014,"courses_fail":11},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2011,"courses_fail":12},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2011,"courses_fail":19},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2010,"courses_fail":25},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2014,"courses_fail":38},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2012,"courses_fail":40},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2015,"courses_fail":46},{"courses_title":"model comptn","courses_instructor":"","courses_year":1900,"courses_fail":52},{"courses_title":"basic alg&data","courses_instructor":"","courses_year":1900,"courses_fail":56},{"courses_title":"comptn, progrmng","courses_instructor":"","courses_year":1900,"courses_fail":57},{"courses_title":"comptn, progrmng","courses_instructor":"kiczales, gregor","courses_year":2013,"courses_fail":59},{"courses_title":"comptn, progrmng","courses_instructor":"","courses_year":1900,"courses_fail":67},{"courses_title":"sftwr constructn","courses_instructor":"","courses_year":1900,"courses_fail":76},{"courses_title":"comptn, progrmng","courses_instructor":"","courses_year":1900,"courses_fail":118},{"courses_title":"comptn, progrmng","courses_instructor":"","courses_year":1900,"courses_fail":150},{"courses_title":"comptn, progrmng","courses_instructor":"","courses_year":1900,"courses_fail":157},{"courses_title":"comptn, progrmng","courses_instructor":"","courses_year":1900,"courses_fail":190}]
+}

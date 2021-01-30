@@ -1,0 +1,19 @@
+{
+    "title": "courses_audit key in EQ",
+    "query": {
+        "WHERE": {
+            "EQ": {
+                "courses_audit": 10
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_audit"
+            ],
+            "ORDER": "courses_audit"
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"rhsc","courses_audit":10},{"courses_dept":"rhsc","courses_audit":10},{"courses_dept":"frst","courses_audit":10},{"courses_dept":"frst","courses_audit":10},{"courses_dept":"frst","courses_audit":10}]
+}

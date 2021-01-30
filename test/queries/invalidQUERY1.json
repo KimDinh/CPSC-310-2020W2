@@ -1,0 +1,6 @@
+{
+    "title": "QUERY is a string",
+    "query": "query",
+    "isQueryValid": false,
+    "result": "InsightError"
+}

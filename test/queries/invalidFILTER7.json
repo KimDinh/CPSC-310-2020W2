@@ -1,0 +1,22 @@
+{
+    "title": "nested MCOMPARISON, SCOMPARISON, NEGATION",
+    "query": {
+        "WHERE": {
+            "NOT": {
+                "IS": {
+                    "GT": {
+                        "courses_avg": 90
+                    }
+                }
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

@@ -1,0 +1,28 @@
+{
+    "title": "OR with multiple FILTER",
+    "query": {
+        "WHERE": {
+            "OR": [
+                {
+                    "IS": {
+                        "courses_instructor": "belleville, patrice"
+                    }
+                },
+                {
+                    "GT": {
+                        "courses_fail": 200
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_title",
+                "courses_year"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"biol","courses_title":"unicellular life","courses_year":1900},{"courses_dept":"biol","courses_title":"cell biology 1","courses_year":1900},{"courses_dept":"chem","courses_title":"structural chem","courses_year":1900},{"courses_dept":"chem","courses_title":"strctr bond chem","courses_year":1900},{"courses_dept":"chem","courses_title":"structural chem","courses_year":1900},{"courses_dept":"chem","courses_title":"structural chem","courses_year":1900},{"courses_dept":"chem","courses_title":"structural chem","courses_year":1900},{"courses_dept":"chem","courses_title":"structural chem","courses_year":1900},{"courses_dept":"chem","courses_title":"strctr bond chem","courses_year":1900},{"courses_dept":"chem","courses_title":"org chem biol sc","courses_year":1900},{"courses_dept":"chem","courses_title":"org chem biol sc","courses_year":1900},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2014},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2014},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2013},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2011},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2015},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2015},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2015},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2010},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2012},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2012},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2012},{"courses_dept":"cpsc","courses_title":"model comptn","courses_year":2007},{"courses_dept":"cpsc","courses_title":"basics comp syst","courses_year":2014},{"courses_dept":"cpsc","courses_title":"basics comp syst","courses_year":2015},{"courses_dept":"cpsc","courses_title":"comp hard&os","courses_year":2014},{"courses_dept":"cpsc","courses_title":"comp hard&os","courses_year":2011},{"courses_dept":"cpsc","courses_title":"comp hard&os","courses_year":2015},{"courses_dept":"cpsc","courses_title":"comp hard&os","courses_year":2011},{"courses_dept":"cpsc","courses_title":"comp hard&os","courses_year":2010},{"courses_dept":"cpsc","courses_title":"comp hard&os","courses_year":2012},{"courses_dept":"cpsc","courses_title":"intr alg dsgn&an","courses_year":2014},{"courses_dept":"cpsc","courses_title":"intr alg dsgn&an","courses_year":2013},{"courses_dept":"cpsc","courses_title":"intr alg dsgn&an","courses_year":2013},{"courses_dept":"cpsc","courses_title":"intr alg dsgn&an","courses_year":2011},{"courses_dept":"cpsc","courses_title":"intr alg dsgn&an","courses_year":2010},{"courses_dept":"cpsc","courses_title":"intr alg dsgn&an","courses_year":2010},{"courses_dept":"cpsc","courses_title":"intr alg dsgn&an","courses_year":2012},{"courses_dept":"cpsc","courses_title":"intr alg dsgn&an","courses_year":2007},{"courses_dept":"cpsc","courses_title":"intr alg dsgn&an","courses_year":2007},{"courses_dept":"cpsc","courses_title":"adv alg dsgn&anl","courses_year":2007},{"courses_dept":"econ","courses_title":"prncpls micrecon","courses_year":1900},{"courses_dept":"math","courses_title":"int calc ap ph s","courses_year":1900},{"courses_dept":"math","courses_title":"int calc ap ph s","courses_year":1900},{"courses_dept":"math","courses_title":"int calc ap ph s","courses_year":1900}]
+}

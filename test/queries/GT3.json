@@ -1,0 +1,19 @@
+{
+    "title": "courses_audit key in GT",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_audit": 15
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_audit"
+            ],
+            "ORDER": "courses_audit"
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"rhsc","courses_audit":17},{"courses_dept":"rhsc","courses_audit":18},{"courses_dept":"cpsc","courses_audit":18},{"courses_dept":"rhsc","courses_audit":19},{"courses_dept":"rhsc","courses_audit":19},{"courses_dept":"rhsc","courses_audit":19},{"courses_dept":"frst","courses_audit":19},{"courses_dept":"frst","courses_audit":19},{"courses_dept":"rhsc","courses_audit":20},{"courses_dept":"rhsc","courses_audit":21},{"courses_dept":"cpsc","courses_audit":21},{"courses_dept":"rhsc","courses_audit":23}]
+}

@@ -1,0 +1,19 @@
+{
+    "title": "courses_audit key in LT",
+    "query": {
+        "WHERE": {
+            "LT": {
+                "courses_audit": 5
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_audit"
+            ],
+            "ORDER": "courses_audit"
+        }
+    },
+    "isQueryValid": true,
+    "result": "ResultTooLargeError"
+}

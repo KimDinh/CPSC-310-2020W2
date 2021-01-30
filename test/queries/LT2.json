@@ -1,0 +1,19 @@
+{
+    "title": "courses_fail key in LT",
+    "query": {
+        "WHERE": {
+            "LT": {
+                "courses_fail": 5
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_fail"
+            ],
+            "ORDER": "courses_fail"
+        }
+    },
+    "isQueryValid": true,
+    "result": "ResultTooLargeError"
+}

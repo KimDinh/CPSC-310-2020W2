@@ -1,0 +1,14 @@
+{
+    "title": "WHERE is a string",
+    "query": {
+        "WHERE": "where",
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

@@ -1,0 +1,49 @@
+{
+    "title": "nested NOT, AND, OR",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "NOT": {
+                        "OR": [
+                            {
+                                "LT": {
+                                    "courses_year": 2016
+                                }
+                            },
+                            {
+                                "GT": {
+                                    "courses_pass": 3
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "NOT": {
+                        "IS": {
+                            "courses_dept": "cpsc"
+                        }
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id",
+                "courses_instructor",
+                "courses_title",
+                "courses_uuid",
+                "courses_avg",
+                "courses_pass",
+                "courses_fail",
+                "courses_audit",
+                "courses_year"
+            ],
+            "ORDER": "courses_audit"
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"apbi","courses_id":"426","courses_instructor":"kronstad, james","courses_title":"plnt-micr inter","courses_uuid":"10437","courses_avg":81,"courses_pass":3,"courses_fail":0,"courses_audit":0,"courses_year":2016},{"courses_dept":"busi","courses_id":"330","courses_instructor":"","courses_title":"found re apprai","courses_uuid":"16427","courses_avg":4,"courses_pass":0,"courses_fail":1,"courses_audit":0,"courses_year":2016},{"courses_dept":"chem","courses_id":"315","courses_instructor":"bussiere, guillaume;monga, vishakha;racicot, leanne;stoodley, robin","courses_title":"chem integ lab i","courses_uuid":"31655","courses_avg":53,"courses_pass":2,"courses_fail":2,"courses_audit":0,"courses_year":2016},{"courses_dept":"chem","courses_id":"315","courses_instructor":"bussiere, guillaume;monga, vishakha;racicot, leanne;stoodley, robin","courses_title":"chem integ lab i","courses_uuid":"31656","courses_avg":65.75,"courses_pass":3,"courses_fail":1,"courses_audit":0,"courses_year":2016},{"courses_dept":"lled","courses_id":"200","courses_instructor":"pringle, john","courses_title":"intro acad writ","courses_uuid":"51784","courses_avg":64.2,"courses_pass":3,"courses_fail":2,"courses_audit":0,"courses_year":2016},{"courses_dept":"dani","courses_id":"200","courses_instructor":"monrad, jens","courses_title":"int danish 1","courses_uuid":"75424","courses_avg":89,"courses_pass":3,"courses_fail":0,"courses_audit":2,"courses_year":2016},{"courses_dept":"econ","courses_id":"516","courses_instructor":"gallipoli, giovanni","courses_title":"spc tpcs macroec","courses_uuid":"10016","courses_avg":95,"courses_pass":3,"courses_fail":0,"courses_audit":2,"courses_year":2016}]
+}

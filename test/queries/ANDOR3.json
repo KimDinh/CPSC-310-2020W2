@@ -1,0 +1,53 @@
+{
+    "title": "nested AND, OR",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "OR": [
+                        {
+                            "IS": {
+                                "courses_dept": "math"
+                            }
+                        },
+                        {
+                            "IS": {
+                                "courses_dept": "cpsc"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "AND": [
+                        {
+                            "LT": {
+                                "courses_avg": 75
+                            }
+                        },
+                        {
+                            "GT": {
+                                "courses_avg": 70
+                            }
+                        },
+                        {
+                            "GT": {
+                                "courses_year": 2015
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id",
+                "courses_year",
+                "courses_avg"
+            ],
+            "ORDER": "courses_year"
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"cpsc","courses_id":"415","courses_year":2016,"courses_avg":73.13},{"courses_dept":"math","courses_id":"100","courses_year":2016,"courses_avg":71.06},{"courses_dept":"math","courses_id":"100","courses_year":2016,"courses_avg":70.43},{"courses_dept":"math","courses_id":"102","courses_year":2016,"courses_avg":72.66},{"courses_dept":"math","courses_id":"102","courses_year":2016,"courses_avg":70.1},{"courses_dept":"math","courses_id":"102","courses_year":2016,"courses_avg":74.86},{"courses_dept":"math","courses_id":"102","courses_year":2016,"courses_avg":70.27},{"courses_dept":"math","courses_id":"102","courses_year":2016,"courses_avg":73.46},{"courses_dept":"math","courses_id":"104","courses_year":2016,"courses_avg":70.07},{"courses_dept":"math","courses_id":"120","courses_year":2016,"courses_avg":70.6},{"courses_dept":"math","courses_id":"217","courses_year":2016,"courses_avg":74.65},{"courses_dept":"math","courses_id":"253","courses_year":2016,"courses_avg":71.66},{"courses_dept":"math","courses_id":"253","courses_year":2016,"courses_avg":74.97},{"courses_dept":"math","courses_id":"253","courses_year":2016,"courses_avg":73.42},{"courses_dept":"math","courses_id":"320","courses_year":2016,"courses_avg":70.81}]
+}

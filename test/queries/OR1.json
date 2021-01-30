@@ -1,0 +1,23 @@
+{
+    "title": "OR with only 1 FILTER that is MCOMPARISON",
+    "query": {
+        "WHERE": {
+            "OR": [
+                {
+                    "LT": {
+                        "courses_avg": 50
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_title",
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg"
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_title":"forest ecology","courses_avg":0},{"courses_title":"in land food com","courses_avg":0},{"courses_title":"in land food com","courses_avg":0},{"courses_title":"prpty,ident&uses","courses_avg":1},{"courses_title":"found re apprai","courses_avg":4},{"courses_title":"found re apprai","courses_avg":4},{"courses_title":"sustnbt&frst ops","courses_avg":4.5},{"courses_title":"engr econ anlys","courses_avg":33},{"courses_title":"log & crit think","courses_avg":33.2},{"courses_title":"hist 1500 - 20 c","courses_avg":34},{"courses_title":"language & curr","courses_avg":39.03},{"courses_title":"language & curr","courses_avg":39.03},{"courses_title":"electrochem eng","courses_avg":42},{"courses_title":"chem integ lab i","courses_avg":42.5},{"courses_title":"resdnt prp study","courses_avg":42.64},{"courses_title":"resdnt prp study","courses_avg":42.64},{"courses_title":"health psycholgy","courses_avg":43.33},{"courses_title":"electrochem eng","courses_avg":44.88},{"courses_title":"hist 1500 - 20 c","courses_avg":46.33},{"courses_title":"hist 1500 - 20 c","courses_avg":46.33},{"courses_title":"cpt aid ms pr as","courses_avg":46.5},{"courses_title":"dif calc phys ap","courses_avg":46.52},{"courses_title":"intr biometrics","courses_avg":46.59},{"courses_title":"financial acctng","courses_avg":46.71},{"courses_title":"re crit analysis","courses_avg":46.95},{"courses_title":"hist 1500 - 20 c","courses_avg":47.13},{"courses_title":"intro acad writ","courses_avg":47.29},{"courses_title":"intro acad writ","courses_avg":47.82},{"courses_title":"intro acad writ","courses_avg":48.9},{"courses_title":"financial acctng","courses_avg":49.07},{"courses_title":"intr biometrics","courses_avg":49.14},{"courses_title":"hist 1500 - 20 c","courses_avg":49.15},{"courses_title":"resdnt prp study","courses_avg":49.17},{"courses_title":"wtr treat&wst mg","courses_avg":49.25},{"courses_title":"stat&comp ap val","courses_avg":49.47},{"courses_title":"stat&comp ap val","courses_avg":49.47},{"courses_title":"intro acad writ","courses_avg":49.73},{"courses_title":"intro acad writ","courses_avg":49.86},{"courses_title":"dif calc phys ap","courses_avg":49.95}]
+}

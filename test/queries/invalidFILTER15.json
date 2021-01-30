@@ -1,0 +1,18 @@
+{
+    "title": "invalid inputstring in SCOMPARISON, double asterisk start",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_dept": "**ab"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

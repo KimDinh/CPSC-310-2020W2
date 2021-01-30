@@ -1,0 +1,18 @@
+{
+    "title": "use ** for inputstring in SCOMPARISON, too large error",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_dept": "**"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "ResultTooLargeError"
+}

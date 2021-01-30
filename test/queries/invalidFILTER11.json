@@ -1,0 +1,17 @@
+{
+    "title": "missing FILTER in LOGICCOMPARISON",
+    "query": {
+        "WHERE": {
+            "AND": [
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}
