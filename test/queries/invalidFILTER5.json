@@ -1,0 +1,18 @@
+{
+    "title": "invalid skey in SCOMPARISON",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_avg": "math"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

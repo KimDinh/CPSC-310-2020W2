@@ -1,0 +1,27 @@
+{
+    "title": "AND with multiple FILTER",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "IS": {
+                        "courses_dept": "cpsc"
+                    }
+                },
+                {
+                    "EQ": {
+                        "courses_fail": 10
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_instructor",
+                "courses_avg"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_instructor":"belleville, patrice","courses_avg":74.04},{"courses_instructor":"woodham, robert","courses_avg":75.5},{"courses_instructor":"","courses_avg":68.7},{"courses_instructor":"allen, meghan","courses_avg":71.92},{"courses_instructor":"carter, paul martin","courses_avg":71.79},{"courses_instructor":"feeley, michael","courses_avg":71.03},{"courses_instructor":"allen, meghan","courses_avg":68.13},{"courses_instructor":"khosravi, hassan","courses_avg":75.82},{"courses_instructor":"","courses_avg":75.82},{"courses_instructor":"belleville, patrice","courses_avg":71.62},{"courses_instructor":"","courses_avg":74.13},{"courses_instructor":"wolfman, steven","courses_avg":71.44},{"courses_instructor":"","courses_avg":77.47},{"courses_instructor":"manuch, jan","courses_avg":73.38},{"courses_instructor":"belleville, patrice","courses_avg":69.95}]
+}

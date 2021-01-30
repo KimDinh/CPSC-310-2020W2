@@ -1,0 +1,23 @@
+{
+    "title": "double NOT",
+    "query": {
+        "WHERE": {
+            "NOT": {
+                "NOT": {
+                    "IS": {
+                        "courses_dept": "aanb"
+                    }
+                }
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id",
+                "courses_year"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"aanb","courses_id":"504","courses_year":2015},{"courses_dept":"aanb","courses_id":"504","courses_year":1900},{"courses_dept":"aanb","courses_id":"551","courses_year":2015},{"courses_dept":"aanb","courses_id":"551","courses_year":1900}]
+}

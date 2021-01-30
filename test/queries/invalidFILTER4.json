@@ -1,0 +1,18 @@
+{
+    "title": "invalid type for number in MCOMPARISON",
+    "query": {
+        "WHERE": {
+            "EQ": {
+                "courses_dept": "90"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

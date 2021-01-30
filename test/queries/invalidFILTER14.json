@@ -1,0 +1,19 @@
+{
+    "title": "SCOMPARISON has more than 1 key",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_dept": "math",
+                "courses_instructor": "kiczales, gregor"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

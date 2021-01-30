@@ -1,0 +1,17 @@
+{
+    "title": "missing mkey in MCOMPARISON",
+    "query": {
+        "WHERE": {
+            "EQ": {
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

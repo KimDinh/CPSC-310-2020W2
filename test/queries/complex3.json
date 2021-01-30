@@ -1,0 +1,27 @@
+{
+    "title": "FILTER is not satisfied",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "LT": {
+                        "courses_avg": 80
+                    }
+                },
+                {
+                    "GT": {
+                        "courses_avg": 90
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_pass"
+            ],
+            "ORDER": "courses_pass"
+        }
+    },
+    "isQueryValid": true,
+    "result":[]
+}

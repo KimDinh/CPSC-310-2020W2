@@ -1,0 +1,18 @@
+{
+    "title": "inputstring in SCOMPARISON contains * at the beginning",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_dept": "*ool"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_audit"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0},{"courses_dept":"zool","courses_audit":0}]
+}

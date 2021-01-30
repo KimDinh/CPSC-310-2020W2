@@ -1,0 +1,18 @@
+{
+    "title": "AND is not an array",
+    "query": {
+        "WHERE": {
+            "AND": {
+                "courses_dept": "math"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

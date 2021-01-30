@@ -1,0 +1,20 @@
+{
+    "title": "OPTIONS has other category than COLUMNS and ORDER",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_avg": 97
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg",
+            "ROW": 1
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

@@ -1,0 +1,22 @@
+{
+    "title": "OR with only 1 FILTER that is SCOMPARISON",
+    "query": {
+        "WHERE": {
+            "OR": [
+                {
+                    "IS": {
+                        "courses_instructor": "belleville, patrice"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"cpsc","courses_avg":74.04},{"courses_dept":"cpsc","courses_avg":83.41},{"courses_dept":"cpsc","courses_avg":73.49},{"courses_dept":"cpsc","courses_avg":75.34},{"courses_dept":"cpsc","courses_avg":76.65},{"courses_dept":"cpsc","courses_avg":73.31},{"courses_dept":"cpsc","courses_avg":79},{"courses_dept":"cpsc","courses_avg":76.06},{"courses_dept":"cpsc","courses_avg":74.29},{"courses_dept":"cpsc","courses_avg":73.36},{"courses_dept":"cpsc","courses_avg":74.26},{"courses_dept":"cpsc","courses_avg":70.95},{"courses_dept":"cpsc","courses_avg":68.22},{"courses_dept":"cpsc","courses_avg":71.45},{"courses_dept":"cpsc","courses_avg":71.62},{"courses_dept":"cpsc","courses_avg":73.09},{"courses_dept":"cpsc","courses_avg":73.62},{"courses_dept":"cpsc","courses_avg":73.83},{"courses_dept":"cpsc","courses_avg":71.94},{"courses_dept":"cpsc","courses_avg":70.92},{"courses_dept":"cpsc","courses_avg":71.28},{"courses_dept":"cpsc","courses_avg":71.24},{"courses_dept":"cpsc","courses_avg":69.4},{"courses_dept":"cpsc","courses_avg":72.53},{"courses_dept":"cpsc","courses_avg":72.19},{"courses_dept":"cpsc","courses_avg":68.94},{"courses_dept":"cpsc","courses_avg":69.95},{"courses_dept":"cpsc","courses_avg":66.34},{"courses_dept":"cpsc","courses_avg":67.16},{"courses_dept":"cpsc","courses_avg":74.06}]
+}

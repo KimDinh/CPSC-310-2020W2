@@ -1,0 +1,29 @@
+{
+    "title": "inputstring for instructor in SCOMPARISON contains *",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "GT": {
+                        "courses_avg": 94
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_instructor": "*ch*"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id",
+                "courses_instructor",
+                "courses_avg"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"edst","courses_id":"505","courses_instructor":"marker, michael","courses_avg":95.78},{"courses_dept":"epse","courses_id":"411","courses_instructor":"mceachern hughes, tammy","courses_avg":95.5},{"courses_dept":"epse","courses_id":"436","courses_instructor":"champion, kathleen","courses_avg":95.47},{"courses_dept":"epse","courses_id":"528","courses_instructor":"chan, eric","courses_avg":95.86},{"courses_dept":"epse","courses_id":"568","courses_instructor":"weber, rachel","courses_avg":95.17},{"courses_dept":"etec","courses_id":"521","courses_instructor":"marker, michael","courses_avg":96.47},{"courses_dept":"etec","courses_id":"521","courses_instructor":"marker, michael","courses_avg":95.1},{"courses_dept":"etec","courses_id":"521","courses_instructor":"marker, michael","courses_avg":95.32},{"courses_dept":"math","courses_id":"516","courses_instructor":"wei, juncheng","courses_avg":96.25},{"courses_dept":"math","courses_id":"545","courses_instructor":"nachmias, asaf","courses_avg":96.83},{"courses_dept":"psyc","courses_id":"537","courses_instructor":"sochting, ingrid","courses_avg":95.75},{"courses_dept":"sowk","courses_id":"505","courses_instructor":"bryson, stephanie;o'connor, deborah;stainton, timothy;sullivan, t richard;tester, frank","courses_avg":96.15},{"courses_dept":"spph","courses_id":"200","courses_instructor":"frankish, charles james","courses_avg":96.96},{"courses_dept":"spph","courses_id":"515","courses_instructor":"kishchenko, svetlana","courses_avg":96.8},{"courses_dept":"spph","courses_id":"545","courses_instructor":"frankish, charles james","courses_avg":95.09}]
+}

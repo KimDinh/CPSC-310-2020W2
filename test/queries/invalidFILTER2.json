@@ -1,0 +1,19 @@
+{
+    "title": "invalid FILTER",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_avg": 90,
+                "courses_pass": 10
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

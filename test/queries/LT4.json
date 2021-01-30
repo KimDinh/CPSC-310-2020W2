@@ -1,0 +1,19 @@
+{
+    "title": "courses_year key in LT",
+    "query": {
+        "WHERE": {
+            "LT": {
+                "courses_year": 2000
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_year"
+            ],
+            "ORDER": "courses_year"
+        }
+    },
+    "isQueryValid": true,
+    "result": "ResultTooLargeError"
+}

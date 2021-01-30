@@ -1,0 +1,17 @@
+{
+    "title": "missing FILTER in NEGATION",
+    "query": {
+        "WHERE": {
+            "NOT": {
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

@@ -1,0 +1,29 @@
+{
+    "title": "inputstring for uuid in SCOMPARISON contains *",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "GT": {
+                        "courses_avg": 94
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_uuid": "*00*"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id",
+                "courses_uuid",
+                "courses_avg"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"cnps","courses_id":"586","courses_uuid":"51008","courses_avg":94.05},{"courses_dept":"econ","courses_id":"516","courses_uuid":"10016","courses_avg":95},{"courses_dept":"econ","courses_id":"516","courses_uuid":"10017","courses_avg":95},{"courses_dept":"edcp","courses_id":"377","courses_uuid":"21700","courses_avg":95.58},{"courses_dept":"epse","courses_id":"437","courses_uuid":"44400","courses_avg":94.08},{"courses_dept":"hgse","courses_id":"357","courses_uuid":"52200","courses_avg":95.26},{"courses_dept":"math","courses_id":"544","courses_uuid":"4009","courses_avg":94.67},{"courses_dept":"psyc","courses_id":"501","courses_uuid":"80500","courses_avg":94.2},{"courses_dept":"psyc","courses_id":"501","courses_uuid":"94900","courses_avg":95},{"courses_dept":"sowk","courses_id":"505","courses_uuid":"43300","courses_avg":95.93}]
+}

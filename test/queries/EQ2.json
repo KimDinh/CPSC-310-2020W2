@@ -1,0 +1,19 @@
+{
+    "title": "courses_fail key in EQ",
+    "query": {
+        "WHERE": {
+            "EQ": {
+                "courses_fail": 50
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_fail"
+            ],
+            "ORDER": "courses_fail"
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"math","courses_fail":50},{"courses_dept":"math","courses_fail":50},{"courses_dept":"math","courses_fail":50},{"courses_dept":"math","courses_fail":50},{"courses_dept":"japn","courses_fail":50},{"courses_dept":"chem","courses_fail":50},{"courses_dept":"chem","courses_fail":50},{"courses_dept":"busi","courses_fail":50},{"courses_dept":"bioc","courses_fail":50},{"courses_dept":"bioc","courses_fail":50}]
+}

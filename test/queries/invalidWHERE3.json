@@ -1,0 +1,25 @@
+{
+    "title": "WHERE is a JSON array",
+    "query": {
+        "WHERE": [
+            {
+                "GT": {
+                    "courses_avg": 97
+                }
+            },
+            {
+                "IS": {
+                    "courses_dept": "adhe"
+                }
+            }
+        ],
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

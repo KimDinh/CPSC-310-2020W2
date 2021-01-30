@@ -1,0 +1,20 @@
+{
+    "title": "SCOMPARISON is an array",
+    "query": {
+        "WHERE": {
+            "IS": [
+                "courses_dept",
+                "courses_pass",
+                "courses_fail"
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

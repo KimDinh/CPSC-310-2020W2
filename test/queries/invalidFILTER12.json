@@ -1,0 +1,20 @@
+{
+    "title": "FILTER is an array",
+    "query": {
+        "WHERE": [
+            {
+                "IS": {
+                    "courses_dept": "math"
+                }
+            }
+        ],
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

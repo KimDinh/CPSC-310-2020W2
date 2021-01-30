@@ -1,0 +1,19 @@
+{
+    "title": "courses_fail key in GT",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_fail": 200
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_fail"
+            ],
+            "ORDER": "courses_fail"
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"math","courses_fail":203},{"courses_dept":"biol","courses_fail":204},{"courses_dept":"math","courses_fail":205},{"courses_dept":"chem","courses_fail":213},{"courses_dept":"econ","courses_fail":221},{"courses_dept":"math","courses_fail":222},{"courses_dept":"chem","courses_fail":226},{"courses_dept":"biol","courses_fail":230},{"courses_dept":"chem","courses_fail":235},{"courses_dept":"chem","courses_fail":250},{"courses_dept":"chem","courses_fail":251},{"courses_dept":"chem","courses_fail":260},{"courses_dept":"chem","courses_fail":264},{"courses_dept":"chem","courses_fail":266},{"courses_dept":"chem","courses_fail":287}]
+}

@@ -1,0 +1,38 @@
+{
+    "title": "nested AND, OR",
+    "query": {
+        "WHERE": {
+            "OR": [
+                {
+                    "EQ": {
+                        "courses_fail": 100
+                    }
+                },
+                {
+                    "AND": [
+                        {
+                            "LT": {
+                                "courses_pass": 600
+                            }
+                        },
+                        {
+                            "GT": {
+                                "courses_pass": 590
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id",
+                "courses_pass",
+                "courses_fail"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"apsc","courses_id":"450","courses_pass":596,"courses_fail":1},{"courses_dept":"biol","courses_id":"140","courses_pass":591,"courses_fail":5},{"courses_dept":"comm","courses_id":"290","courses_pass":1288,"courses_fail":100},{"courses_dept":"germ","courses_id":"100","courses_pass":597,"courses_fail":16},{"courses_dept":"math","courses_id":"103","courses_pass":739,"courses_fail":100},{"courses_dept":"math","courses_id":"152","courses_pass":596,"courses_fail":100},{"courses_dept":"math","courses_id":"200","courses_pass":818,"courses_fail":100},{"courses_dept":"math","courses_id":"200","courses_pass":754,"courses_fail":100},{"courses_dept":"psyc","courses_id":"218","courses_pass":598,"courses_fail":39},{"courses_dept":"psyc","courses_id":"315","courses_pass":596,"courses_fail":35}]
+}

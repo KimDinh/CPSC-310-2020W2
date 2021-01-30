@@ -1,0 +1,19 @@
+{
+    "title": "courses_pass key in GT",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_pass": 2000
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_pass"
+            ],
+            "ORDER": "courses_pass"
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"eosc","courses_pass":2015},{"courses_dept":"eosc","courses_pass":2016},{"courses_dept":"econ","courses_pass":2019},{"courses_dept":"econ","courses_pass":2023},{"courses_dept":"econ","courses_pass":2063},{"courses_dept":"econ","courses_pass":2083},{"courses_dept":"psyc","courses_pass":2095},{"courses_dept":"econ","courses_pass":2099},{"courses_dept":"econ","courses_pass":2124},{"courses_dept":"econ","courses_pass":2134},{"courses_dept":"econ","courses_pass":2169},{"courses_dept":"psyc","courses_pass":2201},{"courses_dept":"econ","courses_pass":2278},{"courses_dept":"econ","courses_pass":2286},{"courses_dept":"psyc","courses_pass":2289},{"courses_dept":"econ","courses_pass":2378},{"courses_dept":"econ","courses_pass":2438},{"courses_dept":"engl","courses_pass":2466},{"courses_dept":"engl","courses_pass":2491},{"courses_dept":"engl","courses_pass":2498},{"courses_dept":"engl","courses_pass":2502},{"courses_dept":"engl","courses_pass":2557},{"courses_dept":"engl","courses_pass":2655},{"courses_dept":"engl","courses_pass":2698},{"courses_dept":"engl","courses_pass":2994}]
+}
