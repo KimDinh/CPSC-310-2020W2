@@ -56,6 +56,14 @@ export default class InsightFacade implements IInsightFacade {
                 sections = sections.filter((section, index) => booleanFilter[index]);
                 // choose columns and possibly sort the sections
                 sections = QueryHelper.processOptions(id, query["OPTIONS"], sections);
+                // add id to the keys in query result
+                for (const section of sections) {
+                    for (const key in section) {
+                        const newKey: string = id + "_" + key;
+                        section[newKey] = section[key];
+                        delete section[key];
+                    }
+                }
                 return resolve(sections);
             } catch (e) {
                 reject(e);
