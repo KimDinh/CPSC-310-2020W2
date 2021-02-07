@@ -4,9 +4,9 @@ import {InsightDatasetKind} from "./IInsightFacade";
 export class Dataset {
     private id: string;
     private kind: InsightDatasetKind;
-    private sections: Section[];
+    private sections: any[];
 
-    constructor(id: string, kind: InsightDatasetKind, sections: Section[]) {
+    constructor(id: string, kind: InsightDatasetKind, sections: any[]) {
         this.id = id;
         this.kind = kind;
         this.sections = sections;
@@ -20,20 +20,21 @@ export class Dataset {
         return this.kind;
     }
 
-    public getSections(): Section[] {
+    public getSections(): any[] {
         return this.sections;
     }
 }
 
-export enum CourseKeys {
+export enum SectionKeys {
     Department = "dept",
     Id = "id",
-    Average = "avg",
     Instructor = "instructor",
     Title = "title",
+    Uuid = "uuid",
+    Average = "avg",
     Pass = "pass",
     Fail = "fail",
     Audit = "audit",
-    Uuid = "uuid",
     Year = "year",
 }
+

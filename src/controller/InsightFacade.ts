@@ -1,6 +1,8 @@
 import Log from "../Util";
-import {IInsightFacade, InsightDataset, InsightDatasetKind} from "./IInsightFacade";
+import {IInsightFacade, InsightDataset, InsightDatasetKind, ResultTooLargeError} from "./IInsightFacade";
 import {InsightError, NotFoundError} from "./IInsightFacade";
+import {QueryHelper} from "./QueryHelper";
+import * as fs from "fs-extra";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -8,6 +10,7 @@ import {InsightError, NotFoundError} from "./IInsightFacade";
  *
  */
 export default class InsightFacade implements IInsightFacade {
+    public static readonly MAXQUERYRESULTS: number = 5000;
 
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
@@ -23,24 +26,33 @@ export default class InsightFacade implements IInsightFacade {
 
     public performQuery(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
-            // if query does not contain WHERE or query["WHERE"] is null or undefined
-            if (!("WHERE" in query) ||  query["WHERE"] === null || query["WHERE"] === undefined) {
-                return reject(new InsightError("Missing 'WHERE' in query"));
+            // if query does not contain WHERE or query["WHERE"] is invalid
+            if (!QueryHelper.checkValidWhere(query)) {
+                return reject(new InsightError("Missing or invalid WHERE in query"));
             }
-            // if query does not contain OPTIONS or query["OPTIONS"] is null or undefined
-            if (!("OPTIONS" in query) || !query["OPTIONS"] === null || !query["OPTIONS"] === undefined) {
-                return reject(new InsightError(("Missing 'OPTIONS' in query")));
+            // if query does not contain OPTIONS or query["OPTIONS"] is invalid
+            if (!QueryHelper.checkValidOptions(query)) {
+                return reject(new InsightError(("Missing or invalid OPTIONS in query")));
             }
             // if query contains keys other than WHERE and OPTIONS
             if (Object.keys(query).length > 2) {
                 return reject(new InsightError("Redundant keys in query"));
             }
-            // TODO: check if ids in query refer to the same and existing dataset
             try {
-                // TODO: perform WHERE
-                // TODO: perform OPTIONS
+                const id: string = QueryHelper.getId(query);
+                let sections: any[] = JSON.parse(fs.readFileSync("./data" + id).toString("base64"));
+                let booleanFilter: boolean[];
+                if (Object.keys(query["WHERE"]).length === 0) {
+                    booleanFilter = sections.map(() => true);
+                } else {
+                    booleanFilter = QueryHelper.processFilter(query["WHERE"], sections);
+                }
+                if (booleanFilter.filter(Boolean).length > InsightFacade.MAXQUERYRESULTS) {
+                    throw new ResultTooLargeError("Query result exceeds " + InsightFacade.MAXQUERYRESULTS.toString());
+                }
+                sections = sections.filter((section, index) => booleanFilter[index]);
+                QueryHelper.processOptions(query["OPTIONS"], sections);
             } catch (e) {
-                // InsightError or ResultTooLargeError caught
                 reject(e);
             }
         });
