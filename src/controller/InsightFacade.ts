@@ -43,15 +43,20 @@ export default class InsightFacade implements IInsightFacade {
                 let sections: any[] = JSON.parse(fs.readFileSync("./data" + id).toString("base64"));
                 let booleanFilter: boolean[];
                 if (Object.keys(query["WHERE"]).length === 0) {
+                    // empty WHERE matches all sections
                     booleanFilter = sections.map(() => true);
                 } else {
-                    booleanFilter = QueryHelper.processFilter(query["WHERE"], sections);
+                    booleanFilter = QueryHelper.processFilter(id, query["WHERE"], sections);
                 }
+                // query result size is larger than MAXQUERYRESULTS
                 if (booleanFilter.filter(Boolean).length > InsightFacade.MAXQUERYRESULTS) {
                     throw new ResultTooLargeError("Query result exceeds " + InsightFacade.MAXQUERYRESULTS.toString());
                 }
+                // remove the sections that do not satisfy the filter
                 sections = sections.filter((section, index) => booleanFilter[index]);
-                QueryHelper.processOptions(query["OPTIONS"], sections);
+                // choose columns and possibly sort the sections
+                sections = QueryHelper.processOptions(id, query["OPTIONS"], sections);
+                return resolve(sections);
             } catch (e) {
                 reject(e);
             }

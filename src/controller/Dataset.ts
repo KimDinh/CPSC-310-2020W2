@@ -37,4 +37,3 @@ export enum SectionKeys {
     Audit = "audit",
     Year = "year",
 }
-
