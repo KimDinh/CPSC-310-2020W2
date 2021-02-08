@@ -10,7 +10,7 @@ export class QueryHelper {
 
     // return true if WHERE exists, is a non-array object, empty or has exactly one valid key
     public static checkValidWhere(query: any): boolean {
-        if (!("WHERE" in query) || query["WHERE"] === null || query["WHERE"] === undefined ||
+        if (!Object.keys(query).includes("WHERE") || query["WHERE"] === null || query["WHERE"] === undefined ||
             Array.isArray(query["WHERE"]) || query["WHERE"].constructor !== Object) {
             return false;
         }
@@ -22,7 +22,7 @@ export class QueryHelper {
 
     // return true if OPTIONS exists, is a non-array object, only contains key COLUMNS and possibly ORDER
     public static checkValidOptions(query: any): boolean {
-        if (!("OPTIONS" in query) || query["OPTIONS"] === null || query["OPTIONS"] === undefined ||
+        if (!Object.keys(query).includes("OPTIONS") || query["OPTIONS"] === null || query["OPTIONS"] === undefined ||
             Array.isArray(query["OPTIONS"]) || query["OPTIONS"].constructor !== Object) {
             return false;
         }
@@ -98,7 +98,7 @@ export class QueryHelper {
                 }
             }
         }
-        if (!("ORDER" in options)) {
+        if (!Object.keys(options).includes("ORDER")) {
             return sections;
         }
         if (typeof options["ORDER"] !== "string") {

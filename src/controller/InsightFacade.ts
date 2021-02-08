@@ -25,50 +25,52 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public performQuery(query: any): Promise<any[]> {
-        return new Promise<any[]>((resolve, reject) => {
-            // if query does not contain WHERE or query["WHERE"] is invalid
-            if (!QueryHelper.checkValidWhere(query)) {
-                return reject(new InsightError("Missing or invalid WHERE in query"));
+        if (query === undefined || query === null) {
+            return Promise.reject(new InsightError("Query is null or undefined"));
+        }
+        // if query does not contain WHERE or query["WHERE"] is invalid
+        if (!QueryHelper.checkValidWhere(query)) {
+            return Promise.reject(new InsightError("Missing or invalid WHERE in query"));
+        }
+        // if query does not contain OPTIONS or query["OPTIONS"] is invalid
+        if (!QueryHelper.checkValidOptions(query)) {
+            return Promise.reject(new InsightError(("Missing or invalid OPTIONS in query")));
+        }
+        // if query contains keys other than WHERE and OPTIONS
+        if (Object.keys(query).length > 2) {
+            return Promise.reject(new InsightError("Redundant keys in query"));
+        }
+        try {
+            const id: string = QueryHelper.getId(query);
+            let sections: any[] = JSON.parse(fs.readFileSync("/data/" + id + ".json")
+                .toString("base64"));
+            let booleanFilter: boolean[];
+            if (Object.keys(query["WHERE"]).length === 0) {
+                // empty WHERE matches all sections
+                booleanFilter = sections.map(() => true);
+            } else {
+                booleanFilter = QueryHelper.processFilter(id, query["WHERE"], sections);
             }
-            // if query does not contain OPTIONS or query["OPTIONS"] is invalid
-            if (!QueryHelper.checkValidOptions(query)) {
-                return reject(new InsightError(("Missing or invalid OPTIONS in query")));
+            // query result size is larger than MAXQUERYRESULTS
+            if (booleanFilter.filter(Boolean).length > InsightFacade.MAXQUERYRESULTS) {
+                throw new ResultTooLargeError();
             }
-            // if query contains keys other than WHERE and OPTIONS
-            if (Object.keys(query).length > 2) {
-                return reject(new InsightError("Redundant keys in query"));
-            }
-            try {
-                const id: string = QueryHelper.getId(query);
-                let sections: any[] = JSON.parse(fs.readFileSync("./data" + id).toString("base64"));
-                let booleanFilter: boolean[];
-                if (Object.keys(query["WHERE"]).length === 0) {
-                    // empty WHERE matches all sections
-                    booleanFilter = sections.map(() => true);
-                } else {
-                    booleanFilter = QueryHelper.processFilter(id, query["WHERE"], sections);
+            // remove the sections that do not satisfy the filter
+            sections = sections.filter((section, index) => booleanFilter[index]);
+            // choose columns and possibly sort the sections
+            sections = QueryHelper.processOptions(id, query["OPTIONS"], sections);
+            // add id to the keys in query result
+            for (const section of sections) {
+                for (const key in section) {
+                    const newKey: string = id + "_" + key;
+                    section[newKey] = section[key];
+                    delete section[key];
                 }
-                // query result size is larger than MAXQUERYRESULTS
-                if (booleanFilter.filter(Boolean).length > InsightFacade.MAXQUERYRESULTS) {
-                    throw new ResultTooLargeError("Query result exceeds " + InsightFacade.MAXQUERYRESULTS.toString());
-                }
-                // remove the sections that do not satisfy the filter
-                sections = sections.filter((section, index) => booleanFilter[index]);
-                // choose columns and possibly sort the sections
-                sections = QueryHelper.processOptions(id, query["OPTIONS"], sections);
-                // add id to the keys in query result
-                for (const section of sections) {
-                    for (const key in section) {
-                        const newKey: string = id + "_" + key;
-                        section[newKey] = section[key];
-                        delete section[key];
-                    }
-                }
-                return resolve(sections);
-            } catch (e) {
-                reject(e);
             }
-        });
+            return Promise.resolve(sections);
+        } catch (e) {
+            return Promise.reject(e);
+        }
     }
 
     public listDatasets(): Promise<InsightDataset[]> {

@@ -634,3 +634,55 @@ describe("InsightFacade PerformQuery", () => {
         });
     });
 });
+
+// This test generates tests from the JSON files in test/smalltest.
+// These tests query on fake datasets (already processed) in /data
+describe("Testing query on fake datasets", () => {
+    let insightFacade: InsightFacade;
+    let testQueries: ITestQuery[] = [];
+
+    // Load all the test queries
+    before(function () {
+        Log.test(`Before: ${this.test.parent.title}`);
+
+        // Load the query JSON files under test/queries.
+        // Fail if there is a problem reading ANY query.
+        try {
+            testQueries = TestUtil.readTestQueries("test/smalltest");
+        } catch (err) {
+            expect.fail(
+                "",
+                "",
+                `Failed to read one or more test queries. ${err}`,
+            );
+        }
+        insightFacade = new InsightFacade();
+    });
+
+    beforeEach(function () {
+        Log.test(`BeforeTest: ${this.currentTest.title}`);
+    });
+
+    after(function () {
+        Log.test(`After: ${this.test.parent.title}`);
+    });
+
+    afterEach(function () {
+        Log.test(`AfterTest: ${this.currentTest.title}`);
+    });
+
+    // Dynamically create and run a test for each query in testQueries
+    // Creates an extra "test" called "Should run test queries" as a byproduct. Don't worry about it
+    it("Should run test queries", function () {
+        describe("PerformQuery tests", function () {
+            for (const test of testQueries) {
+                it(`[${test.filename}] ${test.title}`, function () {
+                    const futureResult: Promise<
+                        any[]
+                        > = insightFacade.performQuery(test.query);
+                    return TestUtil.verifyQueryResult(futureResult, test);
+                });
+            }
+        });
+    });
+});
