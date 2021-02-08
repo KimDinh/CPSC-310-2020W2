@@ -1,7 +1,9 @@
 import Log from "../Util";
-import {IInsightFacade, InsightDataset, InsightDatasetKind} from "./IInsightFacade";
+import {IInsightFacade, InsightDataset, InsightDatasetKind, ResultTooLargeError} from "./IInsightFacade";
 import {InsightError, NotFoundError} from "./IInsightFacade";
 import * as JSZip from "jszip";
+import {QueryHelper} from "./QueryHelper";
+import * as fs from "fs-extra";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -9,6 +11,7 @@ import * as JSZip from "jszip";
  *
  */
 export default class InsightFacade implements IInsightFacade {
+    public static readonly MAXQUERYRESULTS: number = 5000;
 
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
@@ -47,28 +50,52 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public performQuery(query: any): Promise<any[]> {
-        return new Promise<any[]>((resolve, reject) => {
-            // if query does not contain WHERE or query["WHERE"] is null or undefined
-            if (!("WHERE" in query) ||  query["WHERE"] === null || query["WHERE"] === undefined) {
-                return reject(new InsightError("Missing 'WHERE' in query"));
+        if (query === undefined || query === null) {
+            return Promise.reject(new InsightError("Query is null or undefined"));
+        }
+        // if query does not contain WHERE or query["WHERE"] is invalid
+        if (!QueryHelper.checkValidWhere(query)) {
+            return Promise.reject(new InsightError("Missing or invalid WHERE in query"));
+        }
+        // if query does not contain OPTIONS or query["OPTIONS"] is invalid
+        if (!QueryHelper.checkValidOptions(query)) {
+            return Promise.reject(new InsightError(("Missing or invalid OPTIONS in query")));
+        }
+        // if query contains keys other than WHERE and OPTIONS
+        if (Object.keys(query).length > 2) {
+            return Promise.reject(new InsightError("Redundant keys in query"));
+        }
+        try {
+            const id: string = QueryHelper.getId(query);
+            let sections: any[] = JSON.parse(fs.readFileSync("/data/" + id + ".json")
+                .toString("base64"));
+            let booleanFilter: boolean[];
+            if (Object.keys(query["WHERE"]).length === 0) {
+                // empty WHERE matches all sections
+                booleanFilter = sections.map(() => true);
+            } else {
+                booleanFilter = QueryHelper.processFilter(id, query["WHERE"], sections);
             }
-            // if query does not contain OPTIONS or query["OPTIONS"] is null or undefined
-            if (!("OPTIONS" in query) || !query["OPTIONS"] === null || !query["OPTIONS"] === undefined) {
-                return reject(new InsightError(("Missing 'OPTIONS' in query")));
+            // query result size is larger than MAXQUERYRESULTS
+            if (booleanFilter.filter(Boolean).length > InsightFacade.MAXQUERYRESULTS) {
+                throw new ResultTooLargeError();
             }
-            // if query contains keys other than WHERE and OPTIONS
-            if (Object.keys(query).length > 2) {
-                return reject(new InsightError("Redundant keys in query"));
+            // remove the sections that do not satisfy the filter
+            sections = sections.filter((section, index) => booleanFilter[index]);
+            // choose columns and possibly sort the sections
+            sections = QueryHelper.processOptions(id, query["OPTIONS"], sections);
+            // add id to the keys in query result
+            for (const section of sections) {
+                for (const key in section) {
+                    const newKey: string = id + "_" + key;
+                    section[newKey] = section[key];
+                    delete section[key];
+                }
             }
-            // TODO: check if ids in query refer to the same and existing dataset
-            try {
-                // TODO: perform WHERE
-                // TODO: perform OPTIONS
-            } catch (e) {
-                // InsightError or ResultTooLargeError caught
-                reject(e);
-            }
-        });
+            return Promise.resolve(sections);
+        } catch (e) {
+            return Promise.reject(e);
+        }
     }
 
     public listDatasets(): Promise<InsightDataset[]> {
