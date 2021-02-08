@@ -22,16 +22,29 @@ export default class InsightFacade implements IInsightFacade {
             let newZip = new JSZip();
             return newZip.loadAsync(content, {base64: true})
                 .then(function (zip) {
-                    // Code help from documentation
+                    // Code help from documentation and StackOverflow
                     // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
-                    zip.loadAsync("string")
-                        .then(function (zip1) {
-                            Object.keys(zip1.files).forEach(function (filename) {
-                                zip.files[filename].async("string").then(function (fileData) {
-                                    zip.file("sample.txt").async("string");
-                                });
-                            });
+                    // https://stackoverflow.com/questions/39322964/extracting-zipped-files-using-jszip-in-javascript
+                    const currentDataset = [
+                        {
+                            id: id,
+                            kind: kind,
+                            numRows: 64612,
+                        },
+                    ];
+                    let sections = [];
+                    Object.keys(zip.files).forEach(function (filename) {
+                        zip.files[filename].async("string").then(function (fileData) {
+                            // zip.file("sample.txt").async("string");
+                            let section = JSON.parse(fileData);
+                            for (const info of section) {
+                                const department = info.Subject;
+                            }
+                            sections.push(section);
+                            // let sections: any[] = JSON.parse(fs.readFileSync(fileData)
+                            //     .toString("base64"));
                         });
+                    });
                 });
 
             try {
