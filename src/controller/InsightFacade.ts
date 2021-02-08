@@ -1,6 +1,7 @@
 import Log from "../Util";
 import {IInsightFacade, InsightDataset, InsightDatasetKind} from "./IInsightFacade";
 import {InsightError, NotFoundError} from "./IInsightFacade";
+import * as JSZip from "jszip";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -14,7 +15,31 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-        return Promise.reject("Not implemented.");
+        return new Promise<any[]>((resolve, reject) => {
+            let newZip = new JSZip();
+            return newZip.loadAsync(content, {base64: true})
+                .then(function (zip) {
+                    // Code help from documentation
+                    // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
+                    zip.loadAsync("string")
+                        .then(function (zip1) {
+                            Object.keys(zip1.files).forEach(function (filename) {
+                                zip.files[filename].async("string").then(function (fileData) {
+                                    zip.file("sample.txt").async("string");
+                                });
+                            });
+                        });
+                });
+
+            try {
+                // TODO: perform WHERE
+                // TODO: perform OPTIONS
+            } catch (e) {
+                // InsightError or ResultTooLargeError caught
+                reject(e);
+            }
+        });
+        // return Promise.reject("Not implemented.");
     }
 
     public removeDataset(id: string): Promise<string> {
