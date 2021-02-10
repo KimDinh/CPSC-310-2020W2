@@ -1,6 +1,7 @@
 import Log from "../Util";
 import {IInsightFacade, InsightDataset, InsightDatasetKind, ResultTooLargeError} from "./IInsightFacade";
 import {InsightError, NotFoundError} from "./IInsightFacade";
+import {Section} from "./Section";
 import * as JSZip from "jszip";
 import {QueryHelper} from "./QueryHelper";
 import * as fs from "fs-extra";
@@ -10,6 +11,7 @@ import * as fs from "fs-extra";
  * Method documentation is in IInsightFacade
  *
  */
+
 export default class InsightFacade implements IInsightFacade {
     public static readonly MAXQUERYRESULTS: number = 5000;
 
@@ -21,7 +23,7 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise<any[]>((resolve, reject) => {
             let newZip = new JSZip();
             return newZip.loadAsync(content, {base64: true})
-                .then(function (zip) {
+                .then((zip) => {
                     // Code help from documentation and StackOverflow
                     // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
                     // https://stackoverflow.com/questions/39322964/extracting-zipped-files-using-jszip-in-javascript
@@ -32,19 +34,32 @@ export default class InsightFacade implements IInsightFacade {
                             numRows: 64612,
                         },
                     ];
-                    let sections = [];
-                    Object.keys(zip.files).forEach(function (filename) {
-                        zip.files[filename].async("string").then(function (fileData) {
-                            // zip.file("sample.txt").async("string");
-                            let section = JSON.parse(fileData);
-                            for (const info of section) {
-                                const department = info.Subject;
-                            }
-                            sections.push(section);
-                            // let sections: any[] = JSON.parse(fs.readFileSync(fileData)
-                            //     .toString("base64"));
+                    let sectionsPromise: Array<Promise<string>> = [];
+                    const course = zip.folder("courses");
+                    course.forEach((relativePath, file) => {
+                        sectionsPromise.push(file.async("text"));
+                    });
+                    return Promise.all(sectionsPromise).then(function (sectionsArray) {
+                        sectionsArray.forEach((file) => {
+                            let course1 = JSON.parse(file);
+                            course1.result.forEach((section: any) => {
+                                // get the necessary info
+                            });
                         });
                     });
+                    // I don't know what sections contains
+                    // Object.keys(zip.files).forEach(function (filename) {
+                    //     zip.files[filename].async("string").then(function (fileData) {
+                    //         // zip.file("sample.txt").async("string");
+                    //         let section = JSON.parse(fileData);
+                    //         for (const info of section) {
+                    //             const department = info.Subject;
+                    //         }
+                    //         sections.push(section);
+                    //         // let sections: any[] = JSON.parse(fs.readFileSync(fileData)
+                    //         //     .toString("base64"));
+                    //     });
+                    // });
                 });
 
             try {
