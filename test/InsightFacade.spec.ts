@@ -21,7 +21,7 @@ export interface ITestQuery {
     filename: string; // This is injected when reading the file
 }
 
-describe("InsightFacade Add/Remove/List Dataset", function () {
+/*describe("InsightFacade Add/Remove/List Dataset", function () {
     // Reference any datasets you've added to test/data here and they will
     // automatically be loaded in the 'before' hook.
     const datasetsToLoad: { [id: string]: string } = {
@@ -554,11 +554,11 @@ describe("InsightFacade Add/Remove/List Dataset", function () {
     });
 });
 
-/*
+/!*
  * This test suite dynamically generates tests from the JSON files in test/queries.
  * You should not need to modify it; instead, add additional files to the queries directory.
  * You can still make tests the normal way, this is just a convenient tool for a majority of queries.
- */
+ *!/
 describe("InsightFacade PerformQuery", () => {
     const datasetsToQuery: {
         [id: string]: { path: string; kind: InsightDatasetKind };
@@ -599,10 +599,10 @@ describe("InsightFacade PerformQuery", () => {
             );
         }
         return Promise.all(loadDatasetPromises).catch((err) => {
-            /* *IMPORTANT NOTE: This catch is to let this run even without the implemented addDataset,
+            /!* *IMPORTANT NOTE: This catch is to let this run even without the implemented addDataset,
              * for the purposes of seeing all your tests run.
              * TODO For C1, remove this catch block (but keep the Promise.all)
-             */
+             *!/
             return Promise.resolve("HACK TO LET QUERIES RUN");
         });
     });
@@ -633,7 +633,7 @@ describe("InsightFacade PerformQuery", () => {
             }
         });
     });
-});
+});*/
 
 // This test generates tests from the JSON files in test/smalltest.
 // These tests query on fake datasets (already processed) in /data
@@ -677,6 +677,7 @@ describe("Testing query on fake datasets", () => {
         describe("PerformQuery tests", function () {
             for (const test of testQueries) {
                 it(`[${test.filename}] ${test.title}`, function () {
+                    Log.trace(1);
                     const futureResult: Promise<
                         any[]
                         > = insightFacade.performQuery(test.query);

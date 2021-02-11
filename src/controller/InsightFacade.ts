@@ -18,7 +18,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-        return new Promise<any[]>((resolve, reject) => {
+        /*return new Promise<any[]>((resolve, reject) => {
             let newZip = new JSZip();
             return newZip.loadAsync(content, {base64: true})
                 .then(function (zip) {
@@ -41,8 +41,8 @@ export default class InsightFacade implements IInsightFacade {
                 // InsightError or ResultTooLargeError caught
                 reject(e);
             }
-        });
-        // return Promise.reject("Not implemented.");
+        });*/
+        return Promise.reject("Not implemented.");
     }
 
     public removeDataset(id: string): Promise<string> {
@@ -59,6 +59,7 @@ export default class InsightFacade implements IInsightFacade {
         }
         // if query does not contain OPTIONS or query["OPTIONS"] is invalid
         if (!QueryHelper.checkValidOptions(query)) {
+            Log.trace("here");
             return Promise.reject(new InsightError(("Missing or invalid OPTIONS in query")));
         }
         // if query contains keys other than WHERE and OPTIONS
@@ -67,8 +68,7 @@ export default class InsightFacade implements IInsightFacade {
         }
         try {
             const id: string = QueryHelper.getId(query);
-            let sections: any[] = JSON.parse(fs.readFileSync("/data/" + id + ".json")
-                .toString("base64"));
+            let sections: any[] = JSON.parse(fs.readFileSync("data/" + id + ".json", "utf8"));
             let booleanFilter: boolean[];
             if (Object.keys(query["WHERE"]).length === 0) {
                 // empty WHERE matches all sections

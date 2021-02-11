@@ -1,6 +1,7 @@
 import {InsightError} from "./IInsightFacade";
 import * as fs from "fs-extra";
 import {SectionKeys} from "./Dataset";
+import Log from "../Util";
 
 export class QueryHelper {
     public static readonly MFIELDS: string[] =
@@ -26,9 +27,14 @@ export class QueryHelper {
             Array.isArray(query["OPTIONS"]) || query["OPTIONS"].constructor !== Object) {
             return false;
         }
-        return (
-            Object.keys(query["OPTIONS"]) === ["COLUMNS"] || Object.keys(query["OPTIONS"]) === ["COLUMNS", "ORDER"]
-        );
+        const keys: string[] = Object.keys(query["OPTIONS"]);
+        if (keys.length === 1) {
+            return keys[0] === "COLUMNS";
+        }
+        if (keys.length === 2) {
+            return keys[0] === "COLUMNS" && keys[1] === "ORDER";
+        }
+        return false;
     }
 
     // take a query and return a valid dataset id
@@ -54,7 +60,8 @@ export class QueryHelper {
         if (allSpaces) {
             throw new InsightError("Invalid dataset id in query");
         }
-        if (!fs.existsSync("./data" + ids[0])) {
+        Log.trace(ids[0]);
+        if (!fs.existsSync("data/" + ids[0] + ".json")) {
             throw new InsightError("Dataset does not exist");
         }
         return ids[0];
@@ -248,7 +255,7 @@ export class QueryHelper {
         return booleanFilter1;
     }
 
-    // REQUIRE: fieldType is "M", "S", or undefined
+    // REQUIRE: fieldType is "M", "S", or undefined, id is valid
     // "M" refers mfield, "S" refers to sfield
     // if key is not of the form id + "_" + a valid section key of type fieldType, throw InsightError
     // otherwise return the field that follows the underscore
@@ -259,7 +266,7 @@ export class QueryHelper {
         } else {
             errorMessage += (fieldType + "COMPARATOR");
         }
-        if (!key.includes("_") || key.substring(0, key.indexOf("_")) !== id) {
+        if (typeof key !== "string" || !key.includes("_") || key.substring(0, key.indexOf("_")) !== id) {
             throw new InsightError(errorMessage);
         }
         const field: string = key.substring(key.indexOf("_") + 1);
