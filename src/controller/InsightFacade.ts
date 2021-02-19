@@ -1,12 +1,19 @@
 import Log from "../Util";
 import {IInsightFacade, InsightDataset, InsightDatasetKind, ResultTooLargeError} from "./IInsightFacade";
 import {InsightError, NotFoundError} from "./IInsightFacade";
+<<<<<<< HEAD
 import {Section} from "./Section";
 import * as JSZip from "jszip";
+=======
+>>>>>>> kim
 import {QueryHelper} from "./QueryHelper";
 import {DatasetHelper} from "./DatasetHelper";
 import * as fs from "fs-extra";
+<<<<<<< HEAD
 import {Dataset, SectionKeys} from "./Dataset";
+=======
+import * as JSZip from "jszip";
+>>>>>>> kim
 
 /**
  * This is the main programmatic entry point for the project.
@@ -29,6 +36,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
+<<<<<<< HEAD
         let newZip = new JSZip();
         return newZip.loadAsync(content, {base64: true})
             .then((zip) => {
@@ -76,6 +84,33 @@ export default class InsightFacade implements IInsightFacade {
                     return Promise.reject(e);
                 }
             });
+=======
+        /*return new Promise<any[]>((resolve, reject) => {
+            let newZip = new JSZip();
+            return newZip.loadAsync(content, {base64: true})
+                .then(function (zip) {
+                    // Code help from documentation
+                    // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
+                    zip.loadAsync("string")
+                        .then(function (zip1) {
+                            Object.keys(zip1.files).forEach(function (filename) {
+                                zip.files[filename].async("string").then(function (fileData) {
+                                    zip.file("sample.txt").async("string");
+                                });
+                            });
+                        });
+                });
+
+            try {
+                // TODO: perform WHERE
+                // TODO: perform OPTIONS
+            } catch (e) {
+                // InsightError or ResultTooLargeError caught
+                reject(e);
+            }
+        });*/
+        return Promise.reject("Not implemented.");
+>>>>>>> kim
     }
 
     public removeDataset(id: string): Promise<string> {
@@ -92,6 +127,7 @@ export default class InsightFacade implements IInsightFacade {
         }
         // if query does not contain OPTIONS or query["OPTIONS"] is invalid
         if (!QueryHelper.checkValidOptions(query)) {
+            Log.trace("here");
             return Promise.reject(new InsightError(("Missing or invalid OPTIONS in query")));
         }
         // if query contains keys other than WHERE and OPTIONS
@@ -100,8 +136,7 @@ export default class InsightFacade implements IInsightFacade {
         }
         try {
             const id: string = QueryHelper.getId(query);
-            let sections: any[] = JSON.parse(fs.readFileSync("/data/" + id + ".json")
-                .toString("base64"));
+            let sections: any[] = JSON.parse(fs.readFileSync("data/" + id + ".json", "utf8"));
             let booleanFilter: boolean[];
             if (Object.keys(query["WHERE"]).length === 0) {
                 // empty WHERE matches all sections
