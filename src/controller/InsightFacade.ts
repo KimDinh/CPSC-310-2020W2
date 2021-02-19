@@ -29,51 +29,53 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-        return new Promise<any[]>((resolve, reject) => {
-            let newZip = new JSZip();
-            return newZip.loadAsync(content, {base64: true})
-                .then((zip) => {
-                    // Code help from documentation and StackOverflow
-                    // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
-                    // https://stackoverflow.com/questions/39322964/extracting-zipped-files-using-jszip-in-javascript
-                    if (!DatasetHelper.checkValidId(id)) {
-                        return Promise.reject(new InsightError("Invalid dataset id"));
+        let newZip = new JSZip();
+        return newZip.loadAsync(content, {base64: true})
+            .then((zip) => {
+                // Code help from documentation and StackOverflow
+                // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
+                // https://stackoverflow.com/questions/39322964/extracting-zipped-files-using-jszip-in-javascript
+                if (!DatasetHelper.checkValidId(id)) {
+                    return Promise.reject(new InsightError("Invalid dataset id"));
+                }
+                if (!DatasetHelper.checkValidZip(newZip)) {
+                    return Promise.reject(new InsightError("Invalid dataset zip"));
+                }
+                if (!DatasetHelper.checkValidKind(kind)) {
+                    return Promise.reject(new InsightError("Invalid dataset kind"));
+                }
+                try {
+                    let sections: object[] = [];
+                    let sectionsPromise: any[] = [];
+                    if (!DatasetHelper.checkValidCoursesFolder(zip)) {
+                        return Promise.reject(new InsightError("Courses folder does not exist"));
                     }
-                    if (!DatasetHelper.checkValidZip(newZip)) {
-                        return Promise.reject(new InsightError("Invalid dataset zip"));
+                    const courses = zip.folder("courses");
+                    courses.forEach((relativePath, file) => {
+                        sectionsPromise.push(file.async("string"));
+                    });
+                    if (!DatasetHelper.checkValidCoursesFolder(zip)) {
+                        return Promise.reject(new InsightError("Courses folder does not exist"));
                     }
-                    if (!DatasetHelper.checkValidKind(kind)) {
-                        return Promise.reject(new InsightError("Invalid dataset kind"));
-                    }
-                    try {
-                        let sections: object[] = [];
-                        let sectionsPromise: Array<Promise<string>> = [];
-                        if (!DatasetHelper.checkValidCoursesFolder(zip)) {
-                            return Promise.reject(new InsightError("Courses folder does not exist"));
-                        }
-                        const courses = zip.folder("courses");
-                        courses.forEach((relativePath, file) => {
-                            sectionsPromise.push(file.async("string"));
-                        });
-                        if (!DatasetHelper.checkValidCoursesFolder(zip)) {
-                            return Promise.reject(new InsightError("Courses folder does not exist"));
-                        }
-                        return Promise.all(sectionsPromise).then((sectionsArray: any[]) => {
-                            sections = DatasetHelper.addSections(sectionsArray, id, kind);
-                            let sectionString = JSON.stringify(sections);
-                            const currentDataset =  new Dataset(id, kind, sections);
-                            if (sectionString) {
-                                fs.writeFileSync("/data/" + id + ".json", sectionString, "utf8");
-                                return Promise.resolve(id);
-                            } else {
-                                return Promise.reject(new InsightError("Invalid dataset"));
+                    return Promise.all(sectionsPromise).then((sectionsArray: string[]) => {
+                        sections = DatasetHelper.addSections(sectionsArray, id, kind);
+                        let sectionString = JSON.stringify(sections);
+                        const currentDataset =  new Dataset(id, kind, sections);
+                        if (sectionString) {
+                            const dataDir: string = __dirname + "/../../data";
+                            if (!fs.existsSync(dataDir)) {
+                                fs.mkdirsSync(dataDir);
                             }
-                        });
-                    } catch (e) {
-                        return Promise.reject(e);
-                    }
-                });
-        });
+                            fs.writeFileSync(dataDir + "/" + id + ".json", sectionString, "utf8");
+                            return Promise.resolve([id]);
+                        } else {
+                            return Promise.reject(new InsightError("Invalid dataset"));
+                        }
+                    });
+                } catch (e) {
+                    return Promise.reject(e);
+                }
+            });
     }
 
     public removeDataset(id: string): Promise<string> {

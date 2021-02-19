@@ -116,7 +116,7 @@ describe("InsightFacade Add/Remove/List Dataset", function () {
         return expect(futureResult).to.be.rejectedWith(InsightError);
     });
 
-    it("Should not add a dataset that is already added", function () {
+    /*it("Should not add a dataset that is already added", function () {
         const id: string = "courses";
         const expectedAddResult: string[] = [id];
         let addResult: Promise<string[]> = insightFacade.addDataset(
@@ -551,7 +551,7 @@ describe("InsightFacade Add/Remove/List Dataset", function () {
                         );
                     });
             });
-    });
+    });*/
 });
 
 /*
@@ -559,7 +559,7 @@ describe("InsightFacade Add/Remove/List Dataset", function () {
  * You should not need to modify it; instead, add additional files to the queries directory.
  * You can still make tests the normal way, this is just a convenient tool for a majority of queries.
  */
-describe("InsightFacade PerformQuery", () => {
+/*describe("InsightFacade PerformQuery", () => {
     const datasetsToQuery: {
         [id: string]: { path: string; kind: InsightDatasetKind };
     } = {
@@ -599,10 +599,10 @@ describe("InsightFacade PerformQuery", () => {
             );
         }
         return Promise.all(loadDatasetPromises).catch((err) => {
-            /* *IMPORTANT NOTE: This catch is to let this run even without the implemented addDataset,
+            /!* *IMPORTANT NOTE: This catch is to let this run even without the implemented addDataset,
              * for the purposes of seeing all your tests run.
              * TODO For C1, remove this catch block (but keep the Promise.all)
-             */
+             *!/
             return Promise.resolve("HACK TO LET QUERIES RUN");
         });
     });
@@ -685,4 +685,4 @@ describe("Testing query on fake datasets", () => {
             }
         });
     });
-});
+});*/
