@@ -32,7 +32,7 @@ export class QueryHelper {
             return keys[0] === "COLUMNS";
         }
         if (keys.length === 2) {
-            return keys[0] === "COLUMNS" && keys[1] === "ORDER";
+            return (keys[0] === "COLUMNS" && keys[1] === "ORDER") || (keys[0] === "ORDER" && keys[1] === "COLUMNS");
         }
         return false;
     }
@@ -190,23 +190,21 @@ export class QueryHelper {
             throw new InsightError("Invalid inputstring in IS");
         }
         let booleanFilter: boolean[];
-        if (inputString[0] === "*" && inputString[inputString.length - 1] === "*") {
-            // inputstring has * on both ends
+        if (inputString === "*" || inputString === "**") {
+            booleanFilter = sections.map(() => true);
+        } else if (inputString[0] === "*" && inputString[inputString.length - 1] === "*") {
             booleanFilter = sections.map(
                 (section) => section[sfield].includes(inputString.substring(1, inputString.length - 1))
             );
         } else if (inputString[0] === "*") {
-            // inputstring only has * at start
             booleanFilter = sections.map(
                 (section) => section[sfield].endsWith(inputString.substring(1))
             );
         } else if (inputString[inputString.length - 1] === "*") {
-            // inputstring only has * at end
             booleanFilter = sections.map(
                 (section) => section[sfield].startsWith(inputString.substring(0, inputString.length - 1))
             );
         } else {
-            // inputstring has no *
             booleanFilter = sections.map((section) => section[sfield] === inputString);
         }
         return booleanFilter;

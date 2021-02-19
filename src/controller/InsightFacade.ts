@@ -110,7 +110,7 @@ export default class InsightFacade implements IInsightFacade {
             }
             // query result size is larger than MAXQUERYRESULTS
             if (booleanFilter.filter(Boolean).length > InsightFacade.MAXQUERYRESULTS) {
-                throw new ResultTooLargeError();
+                return Promise.reject(new ResultTooLargeError());
             }
             // remove the sections that do not satisfy the filter
             sections = sections.filter((section, index) => booleanFilter[index]);

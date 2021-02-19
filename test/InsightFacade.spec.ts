@@ -21,7 +21,7 @@ export interface ITestQuery {
     filename: string; // This is injected when reading the file
 }
 
-/*describe("InsightFacade Add/Remove/List Dataset", function () {
+describe("InsightFacade Add/Remove/List Dataset", function () {
     // Reference any datasets you've added to test/data here and they will
     // automatically be loaded in the 'before' hook.
     const datasetsToLoad: { [id: string]: string } = {
@@ -552,7 +552,7 @@ export interface ITestQuery {
                     });
             });
     });
-});*/
+});
 
 /*
  * This test suite dynamically generates tests from the JSON files in test/queries.
@@ -632,7 +632,7 @@ describe("InsightFacade PerformQuery", () => {
 
 // This test generates tests from the JSON files in test/smalltest.
 // These tests query on fake datasets (already processed) in /data
-/*describe("Testing query on fake datasets", () => {
+describe("Testing query on fake datasets", () => {
     let insightFacade: InsightFacade;
     let testQueries: ITestQuery[] = [];
 
@@ -681,4 +681,4 @@ describe("InsightFacade PerformQuery", () => {
             }
         });
     });
-});*/
+});
