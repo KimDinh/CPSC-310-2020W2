@@ -49,7 +49,7 @@ export class DatasetHelper {
                     [SectionKeys.Pass]: sectionRaw.Pass,
                     [SectionKeys.Fail]: sectionRaw.Fail,
                     [SectionKeys.Audit]: sectionRaw.Audit,
-                    [SectionKeys.Year]: parseInt(sectionRaw.Year, 10)
+                    [SectionKeys.Year]: sectionRaw.Section === "overall" ? 1900 : parseInt(sectionRaw.Year, 10)
                 };
                 sections.push(section);
             });
