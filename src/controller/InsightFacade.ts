@@ -28,21 +28,21 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
+        if (!DatasetHelper.checkValidId(id)) {
+            return Promise.reject(new InsightError("Invalid dataset id"));
+        }
+        if (!DatasetHelper.checkValidZip(content)) {
+            return Promise.reject(new InsightError("Invalid dataset zip"));
+        }
+        if (!DatasetHelper.checkValidKind(kind)) {
+            return Promise.reject(new InsightError("Invalid dataset kind"));
+        }
         let newZip = new JSZip();
         return newZip.loadAsync(content, {base64: true})
             .then((zip) => {
                 // Code help from documentation and StackOverflow
                 // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
                 // https://stackoverflow.com/questions/39322964/extracting-zipped-files-using-jszip-in-javascript
-                if (!DatasetHelper.checkValidId(id)) {
-                    return Promise.reject(new InsightError("Invalid dataset id"));
-                }
-                if (!DatasetHelper.checkValidZip(newZip)) {
-                    return Promise.reject(new InsightError("Invalid dataset zip"));
-                }
-                if (!DatasetHelper.checkValidKind(kind)) {
-                    return Promise.reject(new InsightError("Invalid dataset kind"));
-                }
                 try {
                     let sections: object[] = [];
                     let sectionsPromise: any[] = [];
@@ -53,11 +53,11 @@ export default class InsightFacade implements IInsightFacade {
                     courses.forEach((relativePath, file) => {
                         sectionsPromise.push(file.async("string"));
                     });
-                    if (!DatasetHelper.checkValidCoursesFolder(zip)) {
-                        return Promise.reject(new InsightError("Courses folder does not exist"));
-                    }
                     return Promise.all(sectionsPromise).then((sectionsArray: string[]) => {
                         sections = DatasetHelper.addSections(sectionsArray, id, kind);
+                        if (!sections.length) {
+                            return Promise.reject(new InsightError("No valid sections in dataset"));
+                        }
                         let sectionString = JSON.stringify(sections);
                         const currentDataset =  new Dataset(id, kind, sections);
                         if (sectionString) {

@@ -7,18 +7,22 @@ export class DatasetHelper {
     // return true if id does not contain underscore, is not undefined, is not null, or is not only whitespaces
     // or the dataset already exists
     public static checkValidId(id: any): boolean {
-        if (id.includes("_") || id === undefined || id === null || !id.trim().length) {
+        if (id === undefined || id === null) {
             return false;
-        } else if (fs.existsSync("./data" + id)) {
+        } else if (!(typeof id === "string")) {
+            return false;
+        } else if (id.includes("_") || !id.trim().length) {
+            return false;
+        } else if (fs.existsSync(__dirname + "/../../data/" + id + ".json")) {
             return false;
         } else {
             return true;
         }
     }
 
-    // return true if kind is not Room or is not null
+    // return true if kind is not Room or is not null or is not undefined
     public static checkValidKind(kind: any): boolean {
-        if (kind === InsightDatasetKind.Rooms || kind === null) {
+        if (kind === InsightDatasetKind.Rooms || kind === null || kind === undefined) {
             return false;
         } else {
             return true;
@@ -37,22 +41,28 @@ export class DatasetHelper {
     public static addSections(sectionsArray: any, id: any, kind: any): any[] {
         let sections: object[] = [];
         sectionsArray.forEach((file: any) => {
-            let sectionsRaw = JSON.parse(file);
-            sectionsRaw.result.forEach((sectionRaw: any) => {
-                let section: { [key in SectionKeys]?: any } = {
-                    [SectionKeys.Department]: sectionRaw.Subject,
-                    [SectionKeys.Id]: sectionRaw.Course,
-                    [SectionKeys.Instructor]: sectionRaw.Professor,
-                    [SectionKeys.Title]: sectionRaw.Title,
-                    [SectionKeys.Uuid]: sectionRaw.id.toString(),
-                    [SectionKeys.Average]: sectionRaw.Avg,
-                    [SectionKeys.Pass]: sectionRaw.Pass,
-                    [SectionKeys.Fail]: sectionRaw.Fail,
-                    [SectionKeys.Audit]: sectionRaw.Audit,
-                    [SectionKeys.Year]: sectionRaw.Section === "overall" ? 1900 : parseInt(sectionRaw.Year, 10)
-                };
-                sections.push(section);
-            });
+            let sectionsRaw;
+            try {
+                sectionsRaw = JSON.parse(file);
+                // Linh: i think here u check if it is a json file
+                sectionsRaw.result.forEach((sectionRaw: any) => {
+                    let section: { [key in SectionKeys]?: any } = {
+                        [SectionKeys.Department]: sectionRaw.Subject,
+                        [SectionKeys.Id]: sectionRaw.Course,
+                        [SectionKeys.Instructor]: sectionRaw.Professor,
+                        [SectionKeys.Title]: sectionRaw.Title,
+                        [SectionKeys.Uuid]: sectionRaw.id.toString(),
+                        [SectionKeys.Average]: sectionRaw.Avg,
+                        [SectionKeys.Pass]: sectionRaw.Pass,
+                        [SectionKeys.Fail]: sectionRaw.Fail,
+                        [SectionKeys.Audit]: sectionRaw.Audit,
+                        [SectionKeys.Year]: sectionRaw.Section === "overall" ? 1900 : parseInt(sectionRaw.Year, 10)
+                    };
+                    sections.push(section);
+                });
+            } catch (e) {
+                // do nothing
+            }
         });
         return sections;
     }
