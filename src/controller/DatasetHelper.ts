@@ -5,15 +5,15 @@ import * as JSZip from "jszip";
 
 export class DatasetHelper {
     // return true if id does not contain underscore, is not undefined, is not null, or is not only whitespaces
-    // or the dataset already exists
-    public static checkValidId(id: any): boolean {
+    // or the dataset already exists (for add)
+    public static checkValidId(id: any, add: boolean): boolean {
         if (id === undefined || id === null) {
             return false;
         } else if (!(typeof id === "string")) {
             return false;
         } else if (id.includes("_") || !id.trim().length) {
             return false;
-        } else if (fs.existsSync(__dirname + "/../../data/" + id + ".json")) {
+        } else if (fs.existsSync(__dirname + "/../../data/" + id + ".json") && add) {
             return false;
         } else {
             return true;
@@ -44,7 +44,6 @@ export class DatasetHelper {
             let sectionsRaw;
             try {
                 sectionsRaw = JSON.parse(file);
-                // Linh: i think here u check if it is a json file
                 sectionsRaw.result.forEach((sectionRaw: any) => {
                     let section: { [key in SectionKeys]?: any } = {
                         [SectionKeys.Department]: sectionRaw.Subject,
@@ -77,4 +76,29 @@ export class DatasetHelper {
             return false;
         }
     }
+
+    public static addKind(sections: object[], id: string, kind: InsightDatasetKind) {
+        let retVal = [
+            {
+                data: sections,
+                kind: kind,
+                rows: sections.length
+            }
+        ];
+        return retVal;
+    }
+
+    public static getAllCurDatasets(dataDir: string) {
+        let allCurDatasetIds: string[] = [];
+        try {
+            let datasetsRaw = fs.readdirSync(dataDir);
+            datasetsRaw.forEach( function (datasetRaw) {
+                allCurDatasetIds.push(datasetRaw.split(".")[0]);
+            });
+            return Promise.resolve(allCurDatasetIds);
+        } catch (e) {
+            return Promise.resolve(allCurDatasetIds);
+        }
+    }
 }
+
