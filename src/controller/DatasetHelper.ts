@@ -77,14 +77,12 @@ export class DatasetHelper {
         }
     }
 
-    public static addKind(sections: object[], id: string, kind: InsightDatasetKind) {
-        let retVal = [
-            {
+    public static formDatasetObject(sections: object[], id: string, kind: InsightDatasetKind) {
+        let retVal = {
                 data: sections,
                 kind: kind,
                 rows: sections.length
-            }
-        ];
+            };
         return retVal;
     }
 

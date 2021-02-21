@@ -45,7 +45,7 @@ export default class InsightFacade implements IInsightFacade {
                 // https://stackoverflow.com/questions/39322964/extracting-zipped-files-using-jszip-in-javascript
                 try {
                     let sections: object[] = [];
-                    let sectionsKind: object[] = [];
+                    let datasetObject: object;
                     let sectionsPromise: any[] = [];
                     if (!DatasetHelper.checkValidCoursesFolder(zip)) {
                         return Promise.reject(new InsightError("Courses folder does not exist"));
@@ -59,26 +59,20 @@ export default class InsightFacade implements IInsightFacade {
                         if (!sections.length) {
                             return Promise.reject(new InsightError("No valid sections in dataset"));
                         }
-                        sectionsKind = DatasetHelper.addKind(sections, id, kind);
-                        let sectionString = JSON.stringify(sections);
-                        let sectionKindString = JSON.stringify(sectionsKind);
-                        const currentDataset =  new Dataset(id, kind, sections);
-                        if (sectionString) {
-                            const dataDir: string = __dirname + "/../../data";
-                            if (!fs.existsSync(dataDir)) {
-                                fs.mkdirsSync(dataDir);
-                            }
-                            fs.writeFileSync(dataDir + "/" + id + ".json", sectionKindString, "utf8");
-                            let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
-                            return Promise.resolve(allCurDatasets);
-                        } else {
-                            return Promise.reject(new InsightError("Invalid dataset"));
+                        datasetObject = DatasetHelper.formDatasetObject(sections, id, kind);
+                        let datasetObjectString = JSON.stringify(datasetObject);
+                        const dataDir: string = __dirname + "/../../data";
+                        if (!fs.existsSync(dataDir)) {
+                            fs.mkdirsSync(dataDir);
                         }
+                        fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
+                        let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
+                        return Promise.resolve(allCurDatasets);
                     });
                 } catch (e) {
                     return Promise.reject(e);
                 }
-            });
+            }).catch((error) => Promise.reject(new InsightError("Invalid zip file")));
     }
 
     public removeDataset(id: string): Promise<string> {
@@ -154,13 +148,13 @@ export default class InsightFacade implements IInsightFacade {
             let datasetsRaw = fs.readdirSync(dataDir);
 
             datasetsRaw.forEach( function (datasetRaw) {
-                let sectionKind: [{"data": any, "kind": InsightDatasetKind, "rows": number}] =
+                let sectionKind: {"data": any, "kind": InsightDatasetKind, "rows": number} =
                     JSON.parse(fs.readFileSync(dataDir + datasetRaw, "utf8"));
                 // let dataset = new InsightDataset(datasetRaw, sectionKind[1], sectionKind[2]);
                 dataset = {
                     id: datasetRaw.split(".")[0],
-                    kind: sectionKind[0].kind,
-                    numRows: sectionKind[0].rows
+                    kind: sectionKind.kind,
+                    numRows: sectionKind.rows
                 };
                 datasets.push(dataset);
             });
