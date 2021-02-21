@@ -3,7 +3,7 @@
     "query": {
         "WHERE": {
             "IS": {
-                "courses_dept": "abn*"
+                "courses_dept": "aan*"
             }
         },
         "OPTIONS": {
