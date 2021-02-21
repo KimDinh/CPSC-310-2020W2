@@ -632,7 +632,7 @@ describe("InsightFacade PerformQuery", () => {
 
 // This test generates tests from the JSON files in test/smalltest.
 // These tests query on fake datasets (already processed) in /data
-describe("Testing query on fake datasets", () => {
+/*describe("Testing query on fake datasets", () => {
     let insightFacade: InsightFacade;
     let testQueries: ITestQuery[] = [];
 
@@ -681,4 +681,4 @@ describe("Testing query on fake datasets", () => {
             }
         });
     });
-});
+});*/

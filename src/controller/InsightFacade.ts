@@ -110,7 +110,7 @@ export default class InsightFacade implements IInsightFacade {
         }
         try {
             const id: string = QueryHelper.getId(query);
-            let sections: any[] = JSON.parse(fs.readFileSync("data/" + id + ".json", "utf8"));
+            let sections: any[] = JSON.parse(fs.readFileSync("data/" + id + ".json", "utf8")).data;
             let booleanFilter: boolean[];
             if (Object.keys(query["WHERE"]).length === 0) {
                 // empty WHERE matches all sections
