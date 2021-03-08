@@ -6,6 +6,7 @@ import Log from "../Util";
 export class QueryHelper {
     public static readonly MFIELDS: string[] =
         [SectionKeys.Average, SectionKeys.Pass, SectionKeys.Fail, SectionKeys.Audit, SectionKeys.Year];
+
     public static readonly SFIELDS: string[] =
         [SectionKeys.Department, SectionKeys.Id, SectionKeys.Instructor, SectionKeys.Title, SectionKeys.Uuid];
 
