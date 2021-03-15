@@ -1,14 +1,18 @@
-import {InsightError} from "./IInsightFacade";
+import {InsightDatasetKind, InsightError} from "./IInsightFacade";
 import * as fs from "fs-extra";
-import {SectionKeys} from "./Dataset";
+import {RoomKeys, SectionKeys} from "./Dataset";
 import Log from "../Util";
+import {TransformationHelper} from "./TransformationHelper";
 
 export class QueryHelper {
     public static readonly MFIELDS: string[] =
-        [SectionKeys.Average, SectionKeys.Pass, SectionKeys.Fail, SectionKeys.Audit, SectionKeys.Year];
+        [SectionKeys.Average, SectionKeys.Pass, SectionKeys.Fail, SectionKeys.Audit, SectionKeys.Year,
+        RoomKeys.Lat, RoomKeys.Lon, RoomKeys.Seats];
 
     public static readonly SFIELDS: string[] =
-        [SectionKeys.Department, SectionKeys.Id, SectionKeys.Instructor, SectionKeys.Title, SectionKeys.Uuid];
+        [SectionKeys.Department, SectionKeys.Id, SectionKeys.Instructor, SectionKeys.Title, SectionKeys.Uuid,
+        RoomKeys.Fullname, RoomKeys.Shortname, RoomKeys.Number, RoomKeys.Name, RoomKeys.Address, RoomKeys.Type,
+        RoomKeys.Furniture, RoomKeys.Href];
 
     // return true if WHERE exists, is a non-array object, empty or has exactly one valid key
     public static checkValidWhere(query: any): boolean {
@@ -72,24 +76,24 @@ export class QueryHelper {
     // if any part of WHERE is invalid, throw InsightError
     // if filter is empty, return an all true array
     // otherwise, return a boolean array that indicates whether each section satisfies the filter
-    public static processFilter(id: string, filter: any, sections: any[]): any[] {
+    public static processFilter(id: string, kind: string, filter: any, sections: any[]): any[] {
         const filterKey = Object.keys(filter)[0];
         let booleanFilter: boolean[];  // a boolean array that indicates whether each section satisfies the filter
         switch (filterKey) {
             case "AND":
             case "OR":
-                booleanFilter = this.performLogicComparison(id, filter, sections);
+                booleanFilter = this.performLogicComparison(id, kind, filter, sections);
                 break;
             case "GT":
             case "LT":
             case "EQ":
-                booleanFilter = this.performMComparison(id, filter, sections);
+                booleanFilter = this.performMComparison(id, kind, filter, sections);
                 break;
             case "IS":
-                booleanFilter = this.performSComparison(id, filter, sections);
+                booleanFilter = this.performSComparison(id, kind, filter, sections);
                 break;
             case "NOT":
-                booleanFilter = this.performNegation(id, filter, sections);
+                booleanFilter = this.performNegation(id, kind, filter, sections);
                 break;
         }
         return booleanFilter;
@@ -97,13 +101,14 @@ export class QueryHelper {
 
     // REQUIRE: options is a JS object, has key COLUMNS (and possibly ORDER)
     // return an array of sections with the keys in columns, sections are sorted if a valid ORDER exists
-    public static processOptions(id: string, options: any, sections: any[]): any[] {
-        const columnFields: string[] = this.getColumnFields(id, options["COLUMNS"]);
+    public static processOptions(id: string, kind: string, options: any, sections: any[]): any[] {
+        const columnFields: string[] = this.getColumnFields(id, kind, options["COLUMNS"]);
         for (const section of sections) {
             for (const key in section) {
-                if (!columnFields.includes(key)) {
-                    delete section[key];
+                if (columnFields.includes(key)) {
+                    section[id + "_" + key] = section[key];
                 }
+                delete section[key];
             }
         }
         if (!Object.keys(options).includes("ORDER")) {
@@ -112,20 +117,10 @@ export class QueryHelper {
         if (typeof options["ORDER"] !== "string") {
             throw new InsightError("Invalid key in ORDER");
         }
-        const fieldToSort: string = this.getField(id, options["ORDER"], undefined);
-        if (!columnFields.includes(fieldToSort)) {
-            throw new InsightError("ORDER key is not in COLUMNS");
-        }
-        sections.sort((section1, section2) => {
-            if (section1[fieldToSort] < section2[fieldToSort]) {
-                return -1;
-            }
-            return 1;
-        });
-        return sections;
+        return TransformationHelper.defaultSort(options["ORDER"], options["COLUMNS"], sections);
     }
 
-    private static performLogicComparison(id: string, filter: any, sections: any[]): boolean[] {
+    private static performLogicComparison(id: string, kind: string, filter: any, sections: any[]): boolean[] {
         const logicFunc: string = Object.keys(filter)[0]; // logicFunc is either "AND" or "OR"
         // Logic comparison is not followed by an array
         if (!Array.isArray(filter[logicFunc])) {
@@ -140,19 +135,20 @@ export class QueryHelper {
             if (!this.checkValidFilter(subFilter)) {
                 throw new InsightError("Invalid filter in " + logicFunc);
             }
-            booleanFilter = this.combineFilter(logicFunc, booleanFilter, this.processFilter(id, subFilter, sections));
+            booleanFilter = this.combineFilter(logicFunc, booleanFilter,
+                this.processFilter(id, kind, subFilter, sections));
         }
         return booleanFilter;
     }
 
-    private static performMComparison(id: string, filter: any, sections: any[]): boolean[] {
+    private static performMComparison(id: string, kind: string, filter: any, sections: any[]): boolean[] {
         const comparator: string = Object.keys(filter)[0];
         // the comparison contains zero or more than one mkey
         if (Object.keys(filter[comparator]).length !== 1) {
             throw new InsightError(comparator + " contains zero or more than one mkey");
         }
         const mkey: string = Object.keys(filter[comparator])[0];
-        const mfield: string = this.getField(id, mkey, "M");
+        const mfield: string = this.getField(id, kind, mkey, "M");
         // the value to compare is not a number
         if (typeof filter[comparator][mkey] !== "number") {
             throw new InsightError(
@@ -174,13 +170,13 @@ export class QueryHelper {
         return booleanFilter;
     }
 
-    private static performSComparison(id: string, filter: any, sections: any[]): boolean[] {
+    private static performSComparison(id: string, kind: string, filter: any, sections: any[]): boolean[] {
         // the comparison contains zero or more than one skey
         if (Object.keys(filter["IS"]).length !== 1) {
             throw new InsightError("IS contains zero or more than one skey");
         }
         const skey: string = Object.keys(filter["IS"])[0];
-        const sfield: string = this.getField(id, skey, "S");
+        const sfield: string = this.getField(id, kind, skey, "S");
         // the value to compare is not a string
         if (typeof filter["IS"][skey] !== "string") {
             throw new InsightError("Cannot compare string to " + typeof filter["IS"][skey] + " in IS");
@@ -211,11 +207,11 @@ export class QueryHelper {
         return booleanFilter;
     }
 
-    private static performNegation(id: string, filter: any, sections: any[]): boolean[] {
+    private static performNegation(id: string, kind: string, filter: any, sections: any[]): boolean[] {
         if (!this.checkValidFilter(filter["NOT"])) {
             throw new InsightError("Invalid filter in NOT");
         }
-        let booleanFilter: boolean[] = this.processFilter(id, filter["NOT"], sections);
+        let booleanFilter: boolean[] = this.processFilter(id, kind, filter["NOT"], sections);
         for (let i in booleanFilter) {
             booleanFilter[i] = !booleanFilter[i];
         }
@@ -258,34 +254,33 @@ export class QueryHelper {
     // "M" refers mfield, "S" refers to sfield
     // if key is not of the form id + "_" + a valid section key of type fieldType, throw InsightError
     // otherwise return the field that follows the underscore
-    private static getField(id: string, key: string, fieldType: string): string {
-        let errorMessage: string = "Invalid key in ";
-        if (fieldType === undefined) {
-            errorMessage += "OPTIONS";
-        } else {
-            errorMessage += (fieldType + "COMPARATOR");
-        }
+    public static getField(id: string, kind: string, key: any, fieldType: string): string {
         if (typeof key !== "string" || !key.includes("_") || key.substring(0, key.indexOf("_")) !== id) {
-            throw new InsightError(errorMessage);
+            throw new InsightError("Invalid key");
         }
         const field: string = key.substring(key.indexOf("_") + 1);
-        if ((fieldType === "M" && !this.MFIELDS.includes(field)) ||
-            (fieldType === "S" && !this.SFIELDS.includes(field)) ||
-            (fieldType === undefined && !Object.values(SectionKeys).includes(field as SectionKeys))) {
-            throw new InsightError(errorMessage);
+        if ((kind === InsightDatasetKind.Courses && !Object.values(SectionKeys).includes(field as SectionKeys)) ||
+            (kind === InsightDatasetKind.Rooms && !Object.values(RoomKeys).includes(field as RoomKeys))) {
+            throw new InsightError("Key does not belong to dataset kind");
+        }
+        if (fieldType === "M" && !this.MFIELDS.includes(field)) {
+            throw new InsightError("Expected mkey");
+        }
+        if (fieldType === "S" && !this.SFIELDS.includes(field)) {
+            throw new InsightError("Expected skey");
         }
         return field;
     }
 
     // if columns is not an array or is an empty array, throw InsightError
     // otherwise, return an array of distinct fields that appear in query result
-    private static getColumnFields(id: string, columns: any): string[] {
+    private static getColumnFields(id: string, kind: string, columns: any): string[] {
         if (!Array.isArray(columns) || columns.length === 0) {
             throw new InsightError("COLUMNS is must be a non-empty array");
         }
         let columnFields: string[] = [];
         for (const key of columns) {
-            let field: string = this.getField(id, key, undefined);
+            let field: string = this.getField(id, kind, key, undefined);
             if (!columnFields.includes(field)) {
                 columnFields.push(field);
             }
