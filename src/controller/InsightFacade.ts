@@ -41,26 +41,33 @@ export default class InsightFacade implements IInsightFacade {
         let newZip = new JSZip();
         return newZip.loadAsync(content, {base64: true})
             .then((zip) => {
-                // Code help from documentation and StackOverflow
-                // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
-                // https://stackoverflow.com/questions/39322964/extracting-zipped-files-using-jszip-in-javascript
-                try {
-                    let sections: object[] = [];
-                    let datasetObject: object;
-                    let sectionsPromise: any[] = [];
-                    if (!DatasetHelper.checkValidCoursesFolder(zip)) {
-                        return Promise.reject(new InsightError("Courses folder does not exist"));
-                    }
-                    const courses = zip.folder("courses");
-                    courses.forEach((relativePath, file) => {
-                        sectionsPromise.push(file.async("string"));
-                    });
-                    return Promise.all(sectionsPromise).then((sectionsArray: string[]) => {
-                        sections = DatasetHelper.addSections(sectionsArray, id, kind);
-                        if (!sections.length) {
-                            return Promise.reject(new InsightError("No valid sections in dataset"));
+                if (kind === InsightDatasetKind.Rooms) {
+                    return this.addRooms(zip, id, kind);
+                } else {
+                    return this.addCourses(zip, id, kind);
+                }
+            }).catch((error) => Promise.reject(new InsightError("Invalid zip file")));
+    }
+
+    private addRooms(zip: JSZip, id: string, kind: InsightDatasetKind.Rooms): Promise<any> {
+        let roomsArray: any[];
+        let datasetObject: object;
+        if (!DatasetHelper.checkValidRoomsFolder(zip)) {
+            return Promise.reject(new InsightError("Rooms folder does not exist"));
+        }
+        const rooms = zip.folder("rooms");
+        if (!DatasetHelper.checkValidIndextHTM(rooms)) {
+            return Promise.reject(new InsightError("Invalid index.htm file"));
+        }
+        try {
+            return new Promise(function (resolve, reject) {
+                rooms.file("index.htm").async("string").then((indexHtm: string) => {
+                    DatasetHelper.getBuildings(zip, indexHtm, id, kind).then((buildings) => {
+                        roomsArray = buildings;
+                        if (!roomsArray.length) {
+                            reject(new InsightError("No valid rooms in dataset"));
                         }
-                        datasetObject = DatasetHelper.formDatasetObject(sections, id, kind);
+                        datasetObject = DatasetHelper.formDatasetObject(roomsArray, id, kind);
                         let datasetObjectString = JSON.stringify(datasetObject);
                         const dataDir: string = __dirname + "/../../data";
                         if (!fs.existsSync(dataDir)) {
@@ -68,12 +75,48 @@ export default class InsightFacade implements IInsightFacade {
                         }
                         fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
                         let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
-                        return Promise.resolve(allCurDatasets);
-                    });
-                } catch (e) {
-                    return Promise.reject(e);
+                        resolve(allCurDatasets);
+                    }).catch();
+                }).catch();
+            });
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    }
+
+    private addCourses(zip: JSZip, id: string, kind: InsightDatasetKind.Courses) {
+        // Code help from documentation and StackOverflow
+        // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
+        // https://stackoverflow.com/questions/39322964/extracting-zipped-files-using-jszip-in-javascript
+        try {
+            let sections: object[] = [];
+            let datasetObject: object;
+            let sectionsPromise: any[] = [];
+            if (!DatasetHelper.checkValidCoursesFolder(zip)) {
+                return Promise.reject(new InsightError("Courses folder does not exist"));
+            }
+            const courses = zip.folder("courses");
+            courses.forEach((relativePath, file) => {
+                sectionsPromise.push(file.async("string"));
+            });
+            return Promise.all(sectionsPromise).then((sectionsArray: string[]) => {
+                sections = DatasetHelper.addSections(sectionsArray, id, kind);
+                if (!sections.length) {
+                    return Promise.reject(new InsightError("No valid sections in dataset"));
                 }
-            }).catch((error) => Promise.reject(new InsightError("Invalid zip file")));
+                datasetObject = DatasetHelper.formDatasetObject(sections, id, kind);
+                let datasetObjectString = JSON.stringify(datasetObject);
+                const dataDir: string = __dirname + "/../../data";
+                if (!fs.existsSync(dataDir)) {
+                    fs.mkdirsSync(dataDir);
+                }
+                fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
+                let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
+                return Promise.resolve(allCurDatasets);
+            });
+        } catch (e) {
+            return Promise.reject(e);
+        }
     }
 
     public removeDataset(id: string): Promise<string> {

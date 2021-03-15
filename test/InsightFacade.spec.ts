@@ -38,7 +38,10 @@ describe("InsightFacade Add/Remove/List Dataset", function () {
         courses10: "./test/data/courses10.zip", // folder contains 1 valid JSON, 1 invalid JSON, valid
         courses11: "./test/data/courses11.zip", // folder contains 1 valid JSON file, 1 folder, valid
         courses12: "./test/data/courses12.zip", // folder contains only 1 folder, invalid
-        rooms: "./test/data/rooms.zip", // folder named room, invalid
+        rooms: "./test/data/rooms.zip", // folder named room, valid
+        rooms2: "./test/data/rooms2.zip", // folder named random, invalid
+        rooms3: "./test/data/rooms3.zip", // folder with no valid building, invalid
+        rooms4: "./test/data/rooms4.zip", // folder with building but no valid rooms, invalid
     };
     let datasets: { [id: string]: string } = {};
     let insightFacade: InsightFacade;
@@ -96,8 +99,39 @@ describe("InsightFacade Add/Remove/List Dataset", function () {
         return expect(futureResult).to.eventually.deep.equal(expected);
     });
 
-    it("Should not add a dataset of kind Room", function () {
+    it("Should add a valid dataset of kind Rooms", function () {
         const id: string = "rooms";
+        const expected: string[] = [id];
+        const futureResult: Promise<string[]> = insightFacade.addDataset(
+            id,
+            datasets[id],
+            InsightDatasetKind.Rooms,
+        );
+        return expect(futureResult).to.eventually.deep.equal(expected);
+    });
+
+    it("Should not add a Rooms type dataset whose folder is not named 'rooms'", function () {
+        const id: string = "rooms2";
+        const futureResult: Promise<string[]> = insightFacade.addDataset(
+            id,
+            datasets[id],
+            InsightDatasetKind.Rooms,
+        );
+        return expect(futureResult).to.be.rejectedWith(InsightError);
+    });
+
+    it("Should not add a Rooms type dataset with no buildings", function () {
+        const id: string = "rooms3";
+        const futureResult: Promise<string[]> = insightFacade.addDataset(
+            id,
+            datasets[id],
+            InsightDatasetKind.Rooms,
+        );
+        return expect(futureResult).to.be.rejectedWith(InsightError);
+    });
+
+    it("Should not add a Rooms type dataset with a building but no rooms", function () {
+        const id: string = "rooms4";
         const futureResult: Promise<string[]> = insightFacade.addDataset(
             id,
             datasets[id],
