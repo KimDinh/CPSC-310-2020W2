@@ -1,0 +1,36 @@
+{
+    "title": "Apply MAX for rooms query",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "rooms_seats": 50
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_type",
+                "maxSeats"
+            ],
+            "ORDER": {
+                "dir": "DOWN",
+                "keys": [
+                    "maxSeats"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_type"
+            ],
+            "APPLY": [
+                {
+                    "maxSeats": {
+                        "MAX": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"rooms_type":"Tiered Large Group","maxSeats":503},{"rooms_type":"Open Design General Purpose","maxSeats":442},{"rooms_type":"TBD","maxSeats":299},{"rooms_type":"Case Style","maxSeats":108},{"rooms_type":"Active Learning","maxSeats":72},{"rooms_type":"Studio Lab","maxSeats":72},{"rooms_type":"","maxSeats":60},{"rooms_type":"Small Group","maxSeats":60}]
+}

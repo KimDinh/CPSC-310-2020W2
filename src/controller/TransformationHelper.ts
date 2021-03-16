@@ -1,17 +1,18 @@
 import {InsightError} from "./IInsightFacade";
 import {QueryHelper} from "./QueryHelper";
+import Log from "../Util";
 
 export class TransformationHelper {
     // return true if TRANSFORMATION does not exists or it exists and only contains GROUP and APPLY
     public static checkValidTransformation(query: any): boolean {
-        if (!Object.keys(query).includes("TRANSFORMATION")) {
+        if (!Object.keys(query).includes("TRANSFORMATIONS")) {
             return true;
         }
-        if (query["TRANSFORMATION"] === null || query["TRANSFORMATION"] === undefined ||
-            Array.isArray(query["TRANSFORMATION"]) || query["TRANSFORMATION"].constructor !== Object) {
+        if (query["TRANSFORMATIONS"] === null || query["TRANSFORMATIONS"] === undefined ||
+            Array.isArray(query["TRANSFORMATIONS"]) || query["TRANSFORMATIONS"].constructor !== Object) {
             return false;
         }
-        const keys: string[] = Object.keys(query["TRANSFORMATION"]);
+        const keys: string[] = Object.keys(query["TRANSFORMATIONS"]);
         return keys.length === 2 && keys[0] === "GROUP" && keys[1] === "APPLY";
     }
 
@@ -31,11 +32,11 @@ export class TransformationHelper {
             throw new InsightError("GROUP is must be a non-empty array");
         }
         let groups: {[key: string]: any[]} = {};
-        for (const section in sections) {
+        for (const section of sections) {
             let sectionKeyByGroup: string = "";
             for (const key of group) {
-                QueryHelper.getField(id, kind, key, undefined);
-                sectionKeyByGroup = sectionKeyByGroup + section[key].toString() + "_dummy_string_";
+                const field: string = QueryHelper.getField(id, kind, key, undefined);
+                sectionKeyByGroup = sectionKeyByGroup + section[field].toString() + "_dummy_string_";
                 if (!groups.hasOwnProperty(sectionKeyByGroup)) {
                     groups[sectionKeyByGroup] = [section];
                 } else {
@@ -122,7 +123,7 @@ export class TransformationHelper {
             }
             sections.push(section);
         }
-        if (options["ORDER"]) {
+        if (options.hasOwnProperty("ORDER")) {
             if (typeof options["ORDER"] === "string") {
                 return this.defaultSort(options["ORDER"], columns, sections);
             } else {

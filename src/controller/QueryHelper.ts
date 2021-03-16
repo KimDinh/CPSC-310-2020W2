@@ -114,10 +114,11 @@ export class QueryHelper {
         if (!Object.keys(options).includes("ORDER")) {
             return sections;
         }
-        if (typeof options["ORDER"] !== "string") {
-            throw new InsightError("Invalid key in ORDER");
+        if (typeof options["ORDER"] === "string") {
+            return TransformationHelper.defaultSort(options["ORDER"], options["COLUMNS"], sections);
+        } else {
+            return TransformationHelper.customSort(options["ORDER"], options["COLUMNS"], sections);
         }
-        return TransformationHelper.defaultSort(options["ORDER"], options["COLUMNS"], sections);
     }
 
     private static performLogicComparison(id: string, kind: string, filter: any, sections: any[]): boolean[] {

@@ -1,0 +1,37 @@
+{
+    "title": "Apply COUNT for courses query",
+    "query": {
+        "WHERE": {
+            "LT": {
+                "courses_avg": 50
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "countFail"
+            ],
+            "ORDER": {
+                "dir": "UP",
+                "keys": [
+                    "countFail",
+                    "courses_dept"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "courses_dept"
+            ],
+            "APPLY": [
+                {
+                    "countFail": {
+                        "COUNT": "courses_fail"
+                    }
+                }
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"chbe","countFail":1},{"courses_dept":"chem","countFail":1},{"courses_dept":"educ","countFail":1},{"courses_dept":"fopr","countFail":1},{"courses_dept":"lfs","countFail":1},{"courses_dept":"phil","countFail":1},{"courses_dept":"psyc","countFail":1},{"courses_dept":"wood","countFail":1},{"courses_dept":"civl","countFail":2},{"courses_dept":"comm","countFail":2},{"courses_dept":"math","countFail":2},{"courses_dept":"frst","countFail":3},{"courses_dept":"hist","countFail":4},{"courses_dept":"lled","countFail":4},{"courses_dept":"busi","countFail":6}]
+}
