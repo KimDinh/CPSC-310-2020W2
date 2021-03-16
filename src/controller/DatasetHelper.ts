@@ -124,7 +124,7 @@ export class DatasetHelper {
                        // not sure what to do?
                    }
                }
-            });
+            }).catch((e) => Promise.reject("Parse HTML error"));
         } catch (e) {
             return Promise.reject(e);
         }
@@ -179,7 +179,7 @@ export class DatasetHelper {
                     return DatasetHelper.processRooms(zip, buildingInfo).then((roomsArray) => {
                         rooms.concat(roomsArray);
                         return rooms;
-                    }).catch();
+                    }).catch((e) => Promise.reject("processRooms error"));
                 } catch (e) {
                     // not sure what to do?
                 }
@@ -214,12 +214,12 @@ export class DatasetHelper {
                                 roomsArray.push(roomObject);
                             }
                         }
-                    });
+                    }).catch((e) => Promise.reject("Parse HTML error"));
                 } catch (e) {
                 // TODO
                 }
-                return Promise.resolve(roomsArray);
-            });
+                return roomsArray;
+            }).catch((e) => Promise.reject("async file error"));
         } catch (e) {
             // TODO
         }

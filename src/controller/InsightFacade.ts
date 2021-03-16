@@ -125,7 +125,7 @@ export default class InsightFacade implements IInsightFacade {
                 fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
                 let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
                 return allCurDatasets;
-            });
+            }).catch((e) => Promise.reject("Error processing sectionsPromise"));
         } catch (e) {
             return Promise.reject(new InsightError());
         }
