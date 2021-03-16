@@ -37,11 +37,11 @@ export class TransformationHelper {
             for (const key of group) {
                 const field: string = QueryHelper.getField(id, kind, key, undefined);
                 sectionKeyByGroup = sectionKeyByGroup + section[field].toString() + "_dummy_string_";
-                if (!groups.hasOwnProperty(sectionKeyByGroup)) {
-                    groups[sectionKeyByGroup] = [section];
-                } else {
-                    groups[sectionKeyByGroup].push(section);
-                }
+            }
+            if (!groups.hasOwnProperty(sectionKeyByGroup)) {
+                groups[sectionKeyByGroup] = [section];
+            } else {
+                groups[sectionKeyByGroup].push(section);
             }
         }
         return Object.values(groups);
@@ -56,6 +56,9 @@ export class TransformationHelper {
                 throw new InsightError("Invalid APPLYRULE");
             }
             const applyKey: string = Object.keys(applyRule)[0];
+            if (applyKey.includes("_")) {
+                throw new InsightError("Applykey contains underscore");
+            }
             if (applyKeys.includes(applyKey)) {
                 throw new InsightError("Repeated applykey");
             }
