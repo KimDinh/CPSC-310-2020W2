@@ -1,0 +1,45 @@
+{
+    "title": "APPLY has multiple rules",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "rooms_seats": 100
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_shortname",
+                "rooms_type",
+                "maxSeats",
+                "sumSeats"
+            ],
+            "ORDER": {
+                "dir": "UP",
+                "keys": [
+                    "maxSeats",
+                    "sumSeats"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_shortname",
+                "rooms_type"
+            ],
+            "APPLY": [
+                {
+                    "maxSeats": {
+                        "MAX": "rooms_seats"
+                    }
+                },
+                {
+                    "sumSeats": {
+                        "SUM": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"rooms_shortname":"MATX","rooms_type":"Tiered Large Group","maxSeats":106,"sumSeats":106},{"rooms_shortname":"BUCH","rooms_type":"Case Style","maxSeats":108,"sumSeats":216},{"rooms_shortname":"IBLC","rooms_type":"Open Design General Purpose","maxSeats":112,"sumSeats":112},{"rooms_shortname":"MCLD","rooms_type":"Tiered Large Group","maxSeats":136,"sumSeats":259},{"rooms_shortname":"AERL","rooms_type":"Tiered Large Group","maxSeats":144,"sumSeats":144},{"rooms_shortname":"IBLC","rooms_type":"Tiered Large Group","maxSeats":154,"sumSeats":154},{"rooms_shortname":"FRDM","rooms_type":"Tiered Large Group","maxSeats":160,"sumSeats":160},{"rooms_shortname":"DMP","rooms_type":"Tiered Large Group","maxSeats":160,"sumSeats":280},{"rooms_shortname":"SWNG","rooms_type":"Tiered Large Group","maxSeats":190,"sumSeats":755},{"rooms_shortname":"CHBE","rooms_type":"Tiered Large Group","maxSeats":200,"sumSeats":200},{"rooms_shortname":"MCML","rooms_type":"Tiered Large Group","maxSeats":200,"sumSeats":200},{"rooms_shortname":"LSK","rooms_type":"Tiered Large Group","maxSeats":205,"sumSeats":388},{"rooms_shortname":"MATH","rooms_type":"Tiered Large Group","maxSeats":224,"sumSeats":224},{"rooms_shortname":"GEOG","rooms_type":"Tiered Large Group","maxSeats":225,"sumSeats":225},{"rooms_shortname":"BIOL","rooms_type":"Tiered Large Group","maxSeats":228,"sumSeats":228},{"rooms_shortname":"PHRM","rooms_type":"Tiered Large Group","maxSeats":236,"sumSeats":403},{"rooms_shortname":"FSC","rooms_type":"Tiered Large Group","maxSeats":250,"sumSeats":250},{"rooms_shortname":"HENN","rooms_type":"Tiered Large Group","maxSeats":257,"sumSeats":562},{"rooms_shortname":"ANGU","rooms_type":"Tiered Large Group","maxSeats":260,"sumSeats":260},{"rooms_shortname":"CHEM","rooms_type":"Tiered Large Group","maxSeats":265,"sumSeats":733},{"rooms_shortname":"BUCH","rooms_type":"Tiered Large Group","maxSeats":275,"sumSeats":887},{"rooms_shortname":"SCRF","rooms_type":"Tiered Large Group","maxSeats":280,"sumSeats":280},{"rooms_shortname":"SRC","rooms_type":"TBD","maxSeats":299,"sumSeats":897},{"rooms_shortname":"WESB","rooms_type":"Tiered Large Group","maxSeats":325,"sumSeats":427},{"rooms_shortname":"ESB","rooms_type":"Tiered Large Group","maxSeats":350,"sumSeats":500},{"rooms_shortname":"LSC","rooms_type":"Tiered Large Group","maxSeats":350,"sumSeats":825},{"rooms_shortname":"HEBB","rooms_type":"Tiered Large Group","maxSeats":375,"sumSeats":375},{"rooms_shortname":"CIRS","rooms_type":"Tiered Large Group","maxSeats":426,"sumSeats":426},{"rooms_shortname":"OSBO","rooms_type":"Open Design General Purpose","maxSeats":442,"sumSeats":442},{"rooms_shortname":"WOOD","rooms_type":"Tiered Large Group","maxSeats":503,"sumSeats":1044}]
+}

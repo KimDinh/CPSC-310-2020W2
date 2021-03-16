@@ -158,10 +158,10 @@ export default class InsightFacade implements IInsightFacade {
             return Promise.reject(new InsightError("Missing or invalid OPTIONS in query"));
         }
         if (!TransformationHelper.checkValidTransformation(query)) {
-            return Promise.reject(new InsightError("Invalid TRANSFORMATION in query"));
+            return Promise.reject(new InsightError("Invalid TRANSFORMATIONS in query"));
         }
         if (Object.keys(query).length > 3 ||
-            (Object.keys(query).length === 3 && !Object.keys(query).includes("TRANSFORMATION"))) {
+            (Object.keys(query).length === 3 && !Object.keys(query).includes("TRANSFORMATIONS"))) {
             return Promise.reject(new InsightError("Redundant keys in query"));
         }
         try {
@@ -178,11 +178,11 @@ export default class InsightFacade implements IInsightFacade {
             }
             // remove the sections that do not satisfy the filter
             sections = sections.filter((section, index) => booleanFilter[index]);
-            if (query.hasOwnProperty("TRANSFORMATION")) {
+            if (query.hasOwnProperty("TRANSFORMATIONS")) {
                 const transformResult =
-                    TransformationHelper.processTransform(id, kind, query["TRANSFORMATION"], sections);
+                    TransformationHelper.processTransform(id, kind, query["TRANSFORMATIONS"], sections);
                 sections = TransformationHelper.processOptionsTransform(id, kind, query["OPTIONS"],
-                    query["TRANSFORMATION"], transformResult);
+                    query["TRANSFORMATIONS"], transformResult);
             } else {
                 if (sections.length > InsightFacade.MAXQUERYRESULTS) {
                     return Promise.reject(new ResultTooLargeError());

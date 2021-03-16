@@ -1,0 +1,20 @@
+{
+    "title": "TRANSFORMATIONS is empty",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "rooms_seats": 100
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_shortname",
+                "rooms_seats"
+            ],
+            "ORDER": "rooms_seats"
+        },
+        "TRANSFORMATIONS": {}
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

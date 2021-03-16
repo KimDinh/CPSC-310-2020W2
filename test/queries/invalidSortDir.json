@@ -1,0 +1,24 @@
+{
+    "title": "ORDER has invalid dir",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_dept": "math"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id",
+                "courses_avg"
+            ],
+            "ORDER": {
+                "dir": "UPUP",
+                "keys": [
+                ]
+            }
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}
