@@ -62,7 +62,7 @@ export default class InsightFacade implements IInsightFacade {
         try {
             return new Promise(function (resolve, reject) {
                 rooms.file("index.htm").async("string").then((indexHtm: string) => {
-                    DatasetHelper.getBuildings(zip, indexHtm, id, kind).then((buildings) => {
+                    DatasetHelper.getBuildings(zip, indexHtm).then((buildings: object[]) => {
                         roomsArray = buildings;
                         if (!roomsArray.length) {
                             reject(new InsightError("No valid rooms in dataset"));
@@ -76,8 +76,8 @@ export default class InsightFacade implements IInsightFacade {
                         fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
                         let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
                         resolve(allCurDatasets);
-                    }).catch();
-                }).catch();
+                    }).catch((error) => Promise.reject(new InsightError("buildings error")));
+                }).catch((error) => Promise.reject(new InsightError("Index.htm error")));
             });
         } catch (e) {
             return Promise.reject(e);

@@ -107,7 +107,7 @@ export class DatasetHelper {
         }
     }
 
-    public static getBuildings(zip: JSZip, content: string, id: string, kind: InsightDatasetKind.Rooms): Promise<any> {
+    public static getBuildings(zip: JSZip, content: string): Promise<object[]> {
         try {
            this.parseHTML(content).then((parsedIndexHTM) => {
                let table = this.findTableBody(parsedIndexHTM);
@@ -173,50 +173,42 @@ export class DatasetHelper {
         return rooms;
     }
 
-    private static processRooms(zip: JSZip, buildingInfo: any[]): any[] {
-        let path = buildingInfo[0];
-        let roomsArray: object[] = [];
-        let roomFolder = zip.folder("rooms").folder("campus").folder("discover");
-        roomFolder = roomFolder.folder("buildings-and-classrooms");
-        if (roomFolder) {
-            try {
-                let asyncFile = roomFolder.file(path).async("string");
-                asyncFile.then((buildingHtml: string) => {
-                    try {
-                        DatasetHelper.parseHTML(buildingHtml).then((roomHtml) => {
-                            let rooms = DatasetHelper.findRooms(roomHtml);
-                            if (rooms) {
-                                for (let room of rooms) {
-                                    let roomObject: { [key in RoomKeys]?: any } = {
-                                        [RoomKeys.Seats]: room[0],
-                                        [RoomKeys.Furniture]: room[1],
-                                        [RoomKeys.Type]: room[2],
-                                        [RoomKeys.Number]: room[3],
-                                        [RoomKeys.Address]: buildingInfo[3],
-                                        [RoomKeys.Fullname]: buildingInfo[2],
-                                        [RoomKeys.Shortname]: buildingInfo[0],
-                                        [RoomKeys.Name]: buildingInfo[0] + "_" + room[3],
-                                        [RoomKeys.Href]: room[4],
-                                        [RoomKeys.Lat]: buildingInfo[4],
-                                        [RoomKeys.Lon]: buildingInfo[5]
-                                    };
-                                    roomsArray.push(roomObject);
-                                }
+    private static processRooms(zip: JSZip, buildingInfo: any[]): any {
+        let path = "rooms/campus/discover/buildings-and-classrooms/" + buildingInfo[0];
+        let roomsArray: any[] = [];
+        try {
+            let asyncFile = zip.file(path).async("string");
+            asyncFile.then((buildingHtml: string) => {
+                try {
+                    DatasetHelper.parseHTML(buildingHtml).then((roomHtml) => {
+                        let rooms = DatasetHelper.findRooms(roomHtml);
+                        if (rooms) {
+                            for (let room of rooms) {
+                                let roomObject: { [key in RoomKeys]?: any } = {
+                                    [RoomKeys.Seats]: room[0],
+                                    [RoomKeys.Furniture]: room[1],
+                                    [RoomKeys.Type]: room[2],
+                                    [RoomKeys.Number]: room[3],
+                                    [RoomKeys.Address]: buildingInfo[3],
+                                    [RoomKeys.Fullname]: buildingInfo[2],
+                                    [RoomKeys.Shortname]: buildingInfo[0],
+                                    [RoomKeys.Name]: buildingInfo[0] + "_" + room[3],
+                                    [RoomKeys.Href]: room[4],
+                                    [RoomKeys.Lat]: buildingInfo[4],
+                                    [RoomKeys.Lon]: buildingInfo[5]
+                                };
+                                roomsArray.push(roomObject);
                             }
-                        });
-                    } catch (e) {
-                    // TODO
-                    }
-                });
-                return roomsArray;
-            } catch (e) {
+                        }
+                    });
+                } catch (e) {
                 // TODO
-            }
+                }
+            });
+            return roomsArray;
+        } catch (e) {
+            // TODO
         }
-    }
-
-    public static getRooms(building: string) {
-        return 1;
     }
 
     private static findTableBody(parsedIndexHTM: any): any {
