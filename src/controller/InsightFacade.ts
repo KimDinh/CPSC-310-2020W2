@@ -6,6 +6,7 @@ import {DatasetHelper} from "./DatasetHelper";
 import * as fs from "fs-extra";
 import {Dataset, SectionKeys} from "./Dataset";
 import * as JSZip from "jszip";
+import {TransformationHelper} from "./TransformationHelper";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -40,39 +41,94 @@ export default class InsightFacade implements IInsightFacade {
         let newZip = new JSZip();
         return newZip.loadAsync(content, {base64: true})
             .then((zip) => {
-                // Code help from documentation and StackOverflow
-                // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
-                // https://stackoverflow.com/questions/39322964/extracting-zipped-files-using-jszip-in-javascript
-                try {
-                    let sections: object[] = [];
-                    let datasetObject: object;
-                    let sectionsPromise: any[] = [];
-                    if (!DatasetHelper.checkValidCoursesFolder(zip)) {
-                        return Promise.reject(new InsightError("Courses folder does not exist"));
-                    }
-                    const courses = zip.folder("courses");
-                    courses.forEach((relativePath, file) => {
-                        sectionsPromise.push(file.async("string"));
-                    });
-                    return Promise.all(sectionsPromise).then((sectionsArray: string[]) => {
-                        sections = DatasetHelper.addSections(sectionsArray, id, kind);
-                        if (!sections.length) {
-                            return Promise.reject(new InsightError("No valid sections in dataset"));
-                        }
-                        datasetObject = DatasetHelper.formDatasetObject(sections, id, kind);
-                        let datasetObjectString = JSON.stringify(datasetObject);
-                        const dataDir: string = __dirname + "/../../data";
-                        if (!fs.existsSync(dataDir)) {
-                            fs.mkdirsSync(dataDir);
-                        }
-                        fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
-                        let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
+                if (kind === InsightDatasetKind.Rooms) {
+                    return this.addRooms(zip, id, kind).then((allCurDatasets: string[]) => {
                         return Promise.resolve(allCurDatasets);
+                    }).catch((error) => {
+                        return Promise.reject(error);
                     });
-                } catch (e) {
-                    return Promise.reject(e);
+                } else {
+                    return this.addCourses(zip, id, kind).then((allCurDatasets: string[]) => {
+                        return Promise.resolve(allCurDatasets);
+                    }).catch((error) => {
+                        return Promise.reject(error);
+                    });
                 }
-            }).catch((error) => Promise.reject(new InsightError("Invalid zip file")));
+            }).catch((error) => {
+                return Promise.reject(new InsightError("Invalid zip file"));
+            });
+    }
+
+    private addRooms(zip: JSZip, id: string, kind: InsightDatasetKind.Rooms): Promise<string[]> {
+        let roomsArray: any[];
+        let datasetObject: object;
+        if (!DatasetHelper.checkValidRoomsFolder(zip)) {
+            return Promise.reject(new InsightError("Rooms folder does not exist"));
+        }
+        const rooms = zip.folder("rooms");
+        if (!DatasetHelper.checkValidIndextHTM(rooms)) {
+            return Promise.reject(new InsightError("Invalid index.htm file"));
+        }
+        try {
+            return rooms.file("index.htm").async("string").then((indexHtm: string) => {
+                return DatasetHelper.getBuildings(zip, indexHtm).then((buildings: object[]) => {
+                    roomsArray = buildings;
+                    if (!roomsArray.length) {
+                        return Promise.reject(new InsightError("No valid rooms in dataset"));
+                    }
+                    datasetObject = DatasetHelper.formDatasetObject(roomsArray, id, kind);
+                    let datasetObjectString = JSON.stringify(datasetObject);
+                    const dataDir: string = __dirname + "/../../data";
+                    if (!fs.existsSync(dataDir)) {
+                        fs.mkdirsSync(dataDir);
+                    }
+                    fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
+                    let allCurDatasets: string[] = DatasetHelper.getAllCurDatasets(dataDir);
+                    return Promise.resolve(allCurDatasets);
+                }).catch((error) => {
+                    return Promise.reject(new InsightError("buildings error"));
+                });
+            }).catch((error) => {
+                return Promise.reject(new InsightError("Index.htm error"));
+            });
+        } catch (e) {
+            return Promise.reject(new InsightError());
+        }
+    }
+
+    private addCourses(zip: JSZip, id: string, kind: InsightDatasetKind.Courses): Promise<string[]> {
+        // Code help from documentation and StackOverflow
+        // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
+        // https://stackoverflow.com/questions/39322964/extracting-zipped-files-using-jszip-in-javascript
+        try {
+            let sections: object[] = [];
+            let datasetObject: object;
+            let sectionsPromise: any[] = [];
+            if (!DatasetHelper.checkValidCoursesFolder(zip)) {
+                return Promise.reject(new InsightError("Courses folder does not exist"));
+            }
+            const courses = zip.folder("courses");
+            courses.forEach((relativePath, file) => {
+                sectionsPromise.push(file.async("string"));
+            });
+            return Promise.all(sectionsPromise).then((sectionsArray: string[]) => {
+                sections = DatasetHelper.addSections(sectionsArray, id, kind);
+                if (!sections.length) {
+                    return Promise.reject(new InsightError("No valid sections in dataset"));
+                }
+                datasetObject = DatasetHelper.formDatasetObject(sections, id, kind);
+                let datasetObjectString = JSON.stringify(datasetObject);
+                const dataDir: string = __dirname + "/../../data";
+                if (!fs.existsSync(dataDir)) {
+                    fs.mkdirsSync(dataDir);
+                }
+                fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
+                let allCurDatasets: string[] = DatasetHelper.getAllCurDatasets(dataDir);
+                return Promise.resolve(allCurDatasets);
+            });
+        } catch (e) {
+            return Promise.reject(new InsightError());
+        }
     }
 
     public removeDataset(id: string): Promise<string> {
@@ -95,44 +151,46 @@ export default class InsightFacade implements IInsightFacade {
         if (query === undefined || query === null) {
             return Promise.reject(new InsightError("Query is null or undefined"));
         }
-        // if query does not contain WHERE or query["WHERE"] is invalid
         if (!QueryHelper.checkValidWhere(query)) {
             return Promise.reject(new InsightError("Missing or invalid WHERE in query"));
         }
-        // if query does not contain OPTIONS or query["OPTIONS"] is invalid
         if (!QueryHelper.checkValidOptions(query)) {
-            Log.trace("here");
-            return Promise.reject(new InsightError(("Missing or invalid OPTIONS in query")));
+            return Promise.reject(new InsightError("Missing or invalid OPTIONS in query"));
         }
-        // if query contains keys other than WHERE and OPTIONS
-        if (Object.keys(query).length > 2) {
+        if (!TransformationHelper.checkValidTransformation(query)) {
+            return Promise.reject(new InsightError("Invalid TRANSFORMATION in query"));
+        }
+        if (Object.keys(query).length > 3 ||
+            (Object.keys(query).length === 3 && !Object.keys(query).includes("TRANSFORMATION"))) {
             return Promise.reject(new InsightError("Redundant keys in query"));
         }
         try {
             const id: string = QueryHelper.getId(query);
-            let sections: any[] = JSON.parse(fs.readFileSync("data/" + id + ".json", "utf8")).data;
+            const dataset = JSON.parse(fs.readFileSync("data/" + id + ".json", "utf8"));
+            let sections: any[] = dataset.data;
+            const kind = dataset.kind;
             let booleanFilter: boolean[];
             if (Object.keys(query["WHERE"]).length === 0) {
                 // empty WHERE matches all sections
                 booleanFilter = sections.map(() => true);
             } else {
-                booleanFilter = QueryHelper.processFilter(id, query["WHERE"], sections);
-            }
-            // query result size is larger than MAXQUERYRESULTS
-            if (booleanFilter.filter(Boolean).length > InsightFacade.MAXQUERYRESULTS) {
-                return Promise.reject(new ResultTooLargeError());
+                booleanFilter = QueryHelper.processFilter(id, kind, query["WHERE"], sections);
             }
             // remove the sections that do not satisfy the filter
             sections = sections.filter((section, index) => booleanFilter[index]);
-            // choose columns and possibly sort the sections
-            sections = QueryHelper.processOptions(id, query["OPTIONS"], sections);
-            // add id to the keys in query result
-            for (const section of sections) {
-                for (const key in section) {
-                    const newKey: string = id + "_" + key;
-                    section[newKey] = section[key];
-                    delete section[key];
+            if (query.hasOwnProperty("TRANSFORMATION")) {
+                const transformResult =
+                    TransformationHelper.processTransform(id, kind, query["TRANSFORMATION"], sections);
+                sections = TransformationHelper.processOptionsTransform(id, kind, query["OPTIONS"],
+                    query["TRANSFORMATION"], transformResult);
+            } else {
+                if (sections.length > InsightFacade.MAXQUERYRESULTS) {
+                    return Promise.reject(new ResultTooLargeError());
                 }
+                sections = QueryHelper.processOptions(id, kind, query["OPTIONS"], sections);
+            }
+            if (sections.length > InsightFacade.MAXQUERYRESULTS) {
+                throw new ResultTooLargeError();
             }
             return Promise.resolve(sections);
         } catch (e) {
@@ -146,7 +204,6 @@ export default class InsightFacade implements IInsightFacade {
         const dataDir: string = __dirname + "/../../data/";
         try {
             let datasetsRaw = fs.readdirSync(dataDir);
-
             datasetsRaw.forEach( function (datasetRaw) {
                 let sectionKind: {"data": any, "kind": InsightDatasetKind, "rows": number} =
                     JSON.parse(fs.readFileSync(dataDir + datasetRaw, "utf8"));

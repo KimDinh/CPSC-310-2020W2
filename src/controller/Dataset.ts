@@ -25,6 +25,20 @@ export class Dataset {
     }
 }
 
+export enum RoomKeys {
+    Lat = "lat",
+    Lon = "lon",
+    Seats = "seats",
+    Fullname = "fullname",
+    Shortname = "shortname",
+    Number = "number",
+    Name = "name",
+    Address = "address",
+    Type = "type",
+    Furniture = "furniture",
+    Href = "href",
+}
+
 export enum SectionKeys {
     Department = "dept",
     Id = "id",
