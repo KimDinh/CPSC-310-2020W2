@@ -114,8 +114,15 @@ export class DatasetHelper {
                if (table === null) {
                    return Promise.reject("Table does not exist");
                } else {
-                   let buildings: string[] = this.findBuilding(zip, table);
-                   return Promise.resolve(buildings);
+                   // let buildings: string[] = this.findBuilding(zip, table);
+                   // return Promise.resolve(buildings);
+                   try {
+                       return DatasetHelper.findBuilding(zip, table).then((roomsArray: object[]) => {
+                           return roomsArray;
+                       }).catch();
+                   } catch (e) {
+                       // not sure what to do?
+                   }
                }
             });
         } catch (e) {
@@ -140,8 +147,8 @@ export class DatasetHelper {
     }
 
     // Code help from https://www.youtube.com/watch?v=pL7-618Vlq8&ab_channel=NoaHeyl
-    public static findBuilding(zip: JSZip, tableBody: any): string[] {
-        let rooms: string[] = [];
+    public static findBuilding(zip: JSZip, tableBody: any): Promise<object[]> {
+        let rooms: object[] = [];
         let buildingInfo: any[] = [];
         const buildingCode = "views-field views-field-field-building-code";
         const buildingAddress = "views-field views-field-field-building-address";
@@ -166,19 +173,26 @@ export class DatasetHelper {
                     }
                 }
                 buildingInfo = [shortname, href, fullname, address, lat, lon];
-                let roomsFromBuilding = DatasetHelper.processRooms(zip, buildingInfo);
-                rooms.concat(roomsFromBuilding);
+                // let roomsFromBuilding = DatasetHelper.processRooms(zip, buildingInfo);
+                // rooms.concat(roomsFromBuilding);
+                try {
+                    return DatasetHelper.processRooms(zip, buildingInfo).then((roomsArray) => {
+                        rooms.concat(roomsArray);
+                        return rooms;
+                    }).catch();
+                } catch (e) {
+                    // not sure what to do?
+                }
             }
         }
-        return rooms;
     }
 
-    private static processRooms(zip: JSZip, buildingInfo: any[]): any {
+    private static processRooms(zip: JSZip, buildingInfo: any[]): Promise<object[]> {
         let path = "rooms/campus/discover/buildings-and-classrooms/" + buildingInfo[0];
         let roomsArray: any[] = [];
         try {
             let asyncFile = zip.file(path).async("string");
-            asyncFile.then((buildingHtml: string) => {
+            return asyncFile.then((buildingHtml: string) => {
                 try {
                     DatasetHelper.parseHTML(buildingHtml).then((roomHtml) => {
                         let rooms = DatasetHelper.findRooms(roomHtml);
@@ -204,8 +218,8 @@ export class DatasetHelper {
                 } catch (e) {
                 // TODO
                 }
+                return Promise.resolve(roomsArray);
             });
-            return roomsArray;
         } catch (e) {
             // TODO
         }

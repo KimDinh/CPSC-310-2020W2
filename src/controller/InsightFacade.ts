@@ -70,8 +70,8 @@ export default class InsightFacade implements IInsightFacade {
             return Promise.reject(new InsightError("Invalid index.htm file"));
         }
         try {
-            rooms.file("index.htm").async("string").then((indexHtm: string) => {
-                DatasetHelper.getBuildings(zip, indexHtm).then((buildings: object[]) => {
+            return rooms.file("index.htm").async("string").then((indexHtm: string) => {
+                return DatasetHelper.getBuildings(zip, indexHtm).then((buildings: object[]) => {
                     roomsArray = buildings;
                     if (!roomsArray.length) {
                         return Promise.reject(new InsightError("No valid rooms in dataset"));
