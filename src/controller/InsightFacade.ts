@@ -83,8 +83,8 @@ export default class InsightFacade implements IInsightFacade {
                         fs.mkdirsSync(dataDir);
                     }
                     fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
-                    let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
-                    return allCurDatasets;
+                    let allCurDatasets: string[] = DatasetHelper.getAllCurDatasets(dataDir);
+                    return Promise.resolve(allCurDatasets);
                 }).catch((error) => {
                     return Promise.reject(new InsightError("buildings error"));
                 });
@@ -123,8 +123,8 @@ export default class InsightFacade implements IInsightFacade {
                     fs.mkdirsSync(dataDir);
                 }
                 fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
-                let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
-                return allCurDatasets;
+                let allCurDatasets: string[] = DatasetHelper.getAllCurDatasets(dataDir);
+                return Promise.resolve(allCurDatasets);
             });
         } catch (e) {
             return Promise.reject(new InsightError());
