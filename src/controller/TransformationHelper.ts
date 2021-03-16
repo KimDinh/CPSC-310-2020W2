@@ -107,8 +107,8 @@ export class TransformationHelper {
         const applyKeys: string[] = this.getApplyKeys(transform["APPLY"]);
         const groupKeys: string[] = transform["GROUP"];
         for (const column of columns) {
-            if ((column.includes("_") && !groupKeys.includes(column) ||
-                (!column.includes("_") && !applyKeys.includes(column)))) {
+            if ((column.includes("_") && !groupKeys.includes(column)) ||
+                (!column.includes("_") && !applyKeys.includes(column))) {
                 throw new InsightError("Invalid key in COLUMNS");
             }
         }
