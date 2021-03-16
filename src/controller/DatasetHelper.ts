@@ -69,7 +69,7 @@ export class DatasetHelper {
     // Code help from
     // https://stackoverflow.com/questions/39939644/jszip-checking-if-a-zip-folder-contains-a-specific-file
     // return true if "courses" folder exist in the zip file
-    public static checkValidCoursesFolder(zip: JSZip) {
+    public static checkValidCoursesFolder(zip: JSZip): boolean {
         if (zip.folder(/courses/).length > 0) {
             return true;
         } else {
@@ -77,7 +77,7 @@ export class DatasetHelper {
         }
     }
 
-    public static formDatasetObject(sections: object[], id: string, kind: InsightDatasetKind) {
+    public static formDatasetObject(sections: object[], id: string, kind: InsightDatasetKind): any {
         let retVal = {
                 data: sections,
                 kind: kind,
@@ -86,7 +86,7 @@ export class DatasetHelper {
         return retVal;
     }
 
-    public static getAllCurDatasets(dataDir: string) {
+    public static getAllCurDatasets(dataDir: string): Promise<string[]> {
         let allCurDatasetIds: string[] = [];
         try {
             let datasetsRaw = fs.readdirSync(dataDir);
@@ -95,7 +95,7 @@ export class DatasetHelper {
             });
             return Promise.resolve(allCurDatasetIds);
         } catch (e) {
-            return Promise.resolve(allCurDatasetIds);
+            return Promise.resolve([]);
         }
     }
 
@@ -123,7 +123,7 @@ export class DatasetHelper {
         }
     }
 
-    public static checkValidRoomsFolder(zip: JSZip) {
+    public static checkValidRoomsFolder(zip: JSZip): boolean {
         if (zip.folder(/rooms/).length > 0) {
             return true;
         } else {
@@ -131,7 +131,7 @@ export class DatasetHelper {
         }
     }
 
-    public static checkValidIndextHTM(rooms: JSZip) {
+    public static checkValidIndextHTM(rooms: JSZip): boolean {
         if (rooms.file("index.htm")) {
             return true;
         } else {

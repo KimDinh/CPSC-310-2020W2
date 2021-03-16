@@ -42,14 +42,24 @@ export default class InsightFacade implements IInsightFacade {
         return newZip.loadAsync(content, {base64: true})
             .then((zip) => {
                 if (kind === InsightDatasetKind.Rooms) {
-                    return this.addRooms(zip, id, kind);
+                    return this.addRooms(zip, id, kind).then((allCurDatasets: string[]) => {
+                        return Promise.resolve(allCurDatasets);
+                    }).catch((error) => {
+                        return Promise.reject(error);
+                    });
                 } else {
-                    return this.addCourses(zip, id, kind);
+                    return this.addCourses(zip, id, kind).then((allCurDatasets: string[]) => {
+                        return Promise.resolve(allCurDatasets);
+                    }).catch((error) => {
+                        return Promise.reject(error);
+                    });
                 }
-            }).catch((error) => Promise.reject(new InsightError("Invalid zip file")));
+            }).catch((error) => {
+                return Promise.reject(new InsightError("Invalid zip file"));
+            });
     }
 
-    private addRooms(zip: JSZip, id: string, kind: InsightDatasetKind.Rooms): Promise<any> {
+    private addRooms(zip: JSZip, id: string, kind: InsightDatasetKind.Rooms): Promise<string[]> {
         let roomsArray: any[];
         let datasetObject: object;
         if (!DatasetHelper.checkValidRoomsFolder(zip)) {
@@ -60,31 +70,33 @@ export default class InsightFacade implements IInsightFacade {
             return Promise.reject(new InsightError("Invalid index.htm file"));
         }
         try {
-            return new Promise(function (resolve, reject) {
-                rooms.file("index.htm").async("string").then((indexHtm: string) => {
-                    DatasetHelper.getBuildings(zip, indexHtm).then((buildings: object[]) => {
-                        roomsArray = buildings;
-                        if (!roomsArray.length) {
-                            reject(new InsightError("No valid rooms in dataset"));
-                        }
-                        datasetObject = DatasetHelper.formDatasetObject(roomsArray, id, kind);
-                        let datasetObjectString = JSON.stringify(datasetObject);
-                        const dataDir: string = __dirname + "/../../data";
-                        if (!fs.existsSync(dataDir)) {
-                            fs.mkdirsSync(dataDir);
-                        }
-                        fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
-                        let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
-                        resolve(allCurDatasets);
-                    }).catch((error) => Promise.reject(new InsightError("buildings error")));
-                }).catch((error) => Promise.reject(new InsightError("Index.htm error")));
+            rooms.file("index.htm").async("string").then((indexHtm: string) => {
+                DatasetHelper.getBuildings(zip, indexHtm).then((buildings: object[]) => {
+                    roomsArray = buildings;
+                    if (!roomsArray.length) {
+                        return Promise.reject(new InsightError("No valid rooms in dataset"));
+                    }
+                    datasetObject = DatasetHelper.formDatasetObject(roomsArray, id, kind);
+                    let datasetObjectString = JSON.stringify(datasetObject);
+                    const dataDir: string = __dirname + "/../../data";
+                    if (!fs.existsSync(dataDir)) {
+                        fs.mkdirsSync(dataDir);
+                    }
+                    fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
+                    let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
+                    return allCurDatasets;
+                }).catch((error) => {
+                    return Promise.reject(new InsightError("buildings error"));
+                });
+            }).catch((error) => {
+                return Promise.reject(new InsightError("Index.htm error"));
             });
         } catch (e) {
-            return Promise.reject(e);
+            return Promise.reject(new InsightError());
         }
     }
 
-    private addCourses(zip: JSZip, id: string, kind: InsightDatasetKind.Courses) {
+    private addCourses(zip: JSZip, id: string, kind: InsightDatasetKind.Courses): Promise<string[]> {
         // Code help from documentation and StackOverflow
         // https://stuk.github.io/jszip/documentation/api_jszip/load_async.html
         // https://stackoverflow.com/questions/39322964/extracting-zipped-files-using-jszip-in-javascript
@@ -112,10 +124,10 @@ export default class InsightFacade implements IInsightFacade {
                 }
                 fs.writeFileSync(dataDir + "/" + id + ".json", datasetObjectString, "utf8");
                 let allCurDatasets: Promise<string[]> = DatasetHelper.getAllCurDatasets(dataDir);
-                return Promise.resolve(allCurDatasets);
+                return allCurDatasets;
             });
         } catch (e) {
-            return Promise.reject(e);
+            return Promise.reject(new InsightError());
         }
     }
 
@@ -192,7 +204,6 @@ export default class InsightFacade implements IInsightFacade {
         const dataDir: string = __dirname + "/../../data/";
         try {
             let datasetsRaw = fs.readdirSync(dataDir);
-
             datasetsRaw.forEach( function (datasetRaw) {
                 let sectionKind: {"data": any, "kind": InsightDatasetKind, "rows": number} =
                     JSON.parse(fs.readFileSync(dataDir + datasetRaw, "utf8"));
