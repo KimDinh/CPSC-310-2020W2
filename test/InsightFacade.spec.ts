@@ -594,7 +594,7 @@ describe("InsightFacade Add/Remove/List Dataset", function () {
  * You can still make tests the normal way, this is just a convenient tool for a majority of queries.
  */
 
-/*describe("InsightFacade PerformQuery", () => {
+describe("InsightFacade PerformQuery", () => {
     const datasetsToQuery: {
         [id: string]: { path: string; kind: InsightDatasetKind };
     } = {
@@ -602,6 +602,10 @@ describe("InsightFacade Add/Remove/List Dataset", function () {
             path: "./test/data/courses.zip",
             kind: InsightDatasetKind.Courses,
         },
+        rooms: {
+            path: "./test/data/rooms.zip",
+            kind: InsightDatasetKind.Rooms,
+        }
     };
     let insightFacade: InsightFacade;
     let testQueries: ITestQuery[] = [];
@@ -662,7 +666,7 @@ describe("InsightFacade Add/Remove/List Dataset", function () {
             }
         });
     });
-});*/
+});
 
 // This test generates tests from the JSON files in test/smalltest.
 // These tests query on fake datasets (already processed) in /data

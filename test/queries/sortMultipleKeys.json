@@ -1,0 +1,36 @@
+{
+    "title": "Query that sorts on multiple keys.",
+    "query": {
+        "WHERE": {
+            "OR": [
+                {
+                    "IS": {
+                        "rooms_shortname": "MATH"
+                    }
+                },
+                {
+                    "IS": {
+                        "rooms_shortname": "LSK"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_seats",
+                "rooms_shortname",
+                "rooms_number"
+            ],
+            "ORDER": {
+                "dir": "UP",
+                "keys": [
+                    "rooms_seats",
+                    "rooms_shortname",
+                    "rooms_number"
+                ]
+            }
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"rooms_seats":25,"rooms_shortname":"MATH","rooms_number":"225"},{"rooms_seats":30,"rooms_shortname":"MATH","rooms_number":"105"},{"rooms_seats":30,"rooms_shortname":"MATH","rooms_number":"202"},{"rooms_seats":30,"rooms_shortname":"MATH","rooms_number":"204"},{"rooms_seats":42,"rooms_shortname":"LSK","rooms_number":"462"},{"rooms_seats":48,"rooms_shortname":"MATH","rooms_number":"104"},{"rooms_seats":48,"rooms_shortname":"MATH","rooms_number":"203"},{"rooms_seats":60,"rooms_shortname":"MATH","rooms_number":"102"},{"rooms_seats":75,"rooms_shortname":"LSK","rooms_number":"460"},{"rooms_seats":183,"rooms_shortname":"LSK","rooms_number":"201"},{"rooms_seats":205,"rooms_shortname":"LSK","rooms_number":"200"},{"rooms_seats":224,"rooms_shortname":"MATH","rooms_number":"100"}]
+}

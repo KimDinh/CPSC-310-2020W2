@@ -1,0 +1,37 @@
+{
+    "title": "Apply AVG for courses query",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_avg": 95
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "avgGrades"
+            ],
+            "ORDER": {
+                "dir": "UP",
+                "keys": [
+                    "avgGrades",
+                    "courses_dept"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "courses_dept"
+            ],
+            "APPLY": [
+                {
+                    "avgGrades": {
+                        "AVG": "courses_avg"
+                    }
+                }
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"courses_dept":"phar","avgGrades":95.07},{"courses_dept":"bmeg","avgGrades":95.15},{"courses_dept":"thtr","avgGrades":95.2},{"courses_dept":"hgse","avgGrades":95.28},{"courses_dept":"phth","avgGrades":95.37},{"courses_dept":"chbe","avgGrades":95.42},{"courses_dept":"phys","avgGrades":95.43},{"courses_dept":"edcp","avgGrades":95.58},{"courses_dept":"etec","avgGrades":95.59},{"courses_dept":"mine","avgGrades":95.65},{"courses_dept":"apsc","avgGrades":95.73},{"courses_dept":"kin","avgGrades":95.77},{"courses_dept":"psyc","avgGrades":95.88},{"courses_dept":"pcth","avgGrades":96},{"courses_dept":"phil","avgGrades":96},{"courses_dept":"musc","avgGrades":96.01},{"courses_dept":"sowk","avgGrades":96.05},{"courses_dept":"libr","avgGrades":96.1},{"courses_dept":"adhe","avgGrades":96.11},{"courses_dept":"edst","avgGrades":96.12},{"courses_dept":"mtrl","avgGrades":96.25},{"courses_dept":"civl","avgGrades":96.27},{"courses_dept":"educ","avgGrades":96.33},{"courses_dept":"epse","avgGrades":96.35},{"courses_dept":"frst","avgGrades":96.36},{"courses_dept":"cnps","avgGrades":96.39},{"courses_dept":"fipr","avgGrades":96.4},{"courses_dept":"crwr","avgGrades":96.44},{"courses_dept":"spph","avgGrades":96.46},{"courses_dept":"plan","avgGrades":96.47},{"courses_dept":"midw","avgGrades":96.5},{"courses_dept":"audi","avgGrades":96.9},{"courses_dept":"math","avgGrades":96.9},{"courses_dept":"arst","avgGrades":96.94},{"courses_dept":"nurs","avgGrades":97.1},{"courses_dept":"eece","avgGrades":98.75}]
+}

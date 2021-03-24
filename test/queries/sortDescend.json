@@ -1,0 +1,23 @@
+{
+    "title": "Query that sorts in descending order.",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "rooms_shortname": "BUCH"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_name"
+            ],
+            "ORDER": {
+                "dir": "DOWN",
+                "keys": [
+                    "rooms_name"
+                ]
+            }
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"rooms_name":"BUCH_D325"},{"rooms_name":"BUCH_D323"},{"rooms_name":"BUCH_D322"},{"rooms_name":"BUCH_D319"},{"rooms_name":"BUCH_D317"},{"rooms_name":"BUCH_D316"},{"rooms_name":"BUCH_D315"},{"rooms_name":"BUCH_D314"},{"rooms_name":"BUCH_D313"},{"rooms_name":"BUCH_D312"},{"rooms_name":"BUCH_D307"},{"rooms_name":"BUCH_D306"},{"rooms_name":"BUCH_D304"},{"rooms_name":"BUCH_D301"},{"rooms_name":"BUCH_D229"},{"rooms_name":"BUCH_D228"},{"rooms_name":"BUCH_D222"},{"rooms_name":"BUCH_D221"},{"rooms_name":"BUCH_D219"},{"rooms_name":"BUCH_D218"},{"rooms_name":"BUCH_D217"},{"rooms_name":"BUCH_D216"},{"rooms_name":"BUCH_D214"},{"rooms_name":"BUCH_D213"},{"rooms_name":"BUCH_D209"},{"rooms_name":"BUCH_D207"},{"rooms_name":"BUCH_D205"},{"rooms_name":"BUCH_D204"},{"rooms_name":"BUCH_D201"},{"rooms_name":"BUCH_B319"},{"rooms_name":"BUCH_B318"},{"rooms_name":"BUCH_B316"},{"rooms_name":"BUCH_B315"},{"rooms_name":"BUCH_B313"},{"rooms_name":"BUCH_B312"},{"rooms_name":"BUCH_B310"},{"rooms_name":"BUCH_B309"},{"rooms_name":"BUCH_B308"},{"rooms_name":"BUCH_B307"},{"rooms_name":"BUCH_B306"},{"rooms_name":"BUCH_B304"},{"rooms_name":"BUCH_B303"},{"rooms_name":"BUCH_B302"},{"rooms_name":"BUCH_B219"},{"rooms_name":"BUCH_B218"},{"rooms_name":"BUCH_B216"},{"rooms_name":"BUCH_B215"},{"rooms_name":"BUCH_B213"},{"rooms_name":"BUCH_B211"},{"rooms_name":"BUCH_B210"},{"rooms_name":"BUCH_B209"},{"rooms_name":"BUCH_B208"},{"rooms_name":"BUCH_B142"},{"rooms_name":"BUCH_B141"},{"rooms_name":"BUCH_A203"},{"rooms_name":"BUCH_A202"},{"rooms_name":"BUCH_A201"},{"rooms_name":"BUCH_A104"},{"rooms_name":"BUCH_A103"},{"rooms_name":"BUCH_A102"},{"rooms_name":"BUCH_A101"}]
+}

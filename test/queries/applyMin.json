@@ -1,0 +1,36 @@
+{
+    "title": "Apply MIN for rooms query",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "rooms_seats": 50
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_type",
+                "minSeats"
+            ],
+            "ORDER": {
+                "dir": "DOWN",
+                "keys": [
+                    "minSeats"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_type"
+            ],
+            "APPLY": [
+                {
+                    "minSeats": {
+                        "MIN": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"rooms_type":"TBD","minSeats":299},{"rooms_type":"Active Learning","minSeats":72},{"rooms_type":"Studio Lab","minSeats":72},{"rooms_type":"","minSeats":60},{"rooms_type":"Small Group","minSeats":60},{"rooms_type":"Tiered Large Group","minSeats":58},{"rooms_type":"Case Style","minSeats":54},{"rooms_type":"Open Design General Purpose","minSeats":51}]
+}
