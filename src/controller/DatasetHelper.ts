@@ -168,11 +168,14 @@ export class DatasetHelper {
                         }
                     }
                     try {
-                        GeolocationHelper.getLatLon(buildingInfo).then((ret) => {
-                            roomsPromise.push(DatasetHelper.processRooms(zip, buildingInfo));
-                        });
+                        const location = GeolocationHelper.getLatLon(buildingInfo.address);
+                        if (location) {
+                            buildingInfo.lat = location.lat;
+                            buildingInfo.lon = location.lon;
+                            roomsPromise.push(this.processRooms(zip, buildingInfo));
+                        }
                     } catch (e) {
-                        // Geolocation errored out, just skip this building as per spec
+                        continue;
                     }
                 }
             }

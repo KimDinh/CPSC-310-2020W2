@@ -10,9 +10,9 @@ import {TransformationHelper} from "./TransformationHelper";
 
 export class GeolocationHelper {
 
-    public static getLatLon(buildingObject: any): Promise<any> {
-        const httplink = "http://cs310.students.cs.ubc.ca:11316/api/v1/project_team158/";
-        const httpFull = httplink + encodeURIComponent(buildingObject.address);
+    public static getLatLon(address: string): any {
+        const httpLink = "http://cs310.students.cs.ubc.ca:11316/api/v1/project_team158/";
+        const httpFull = httpLink + encodeURIComponent(address);
         const http = require("http");
         try {
             http.get(httpFull, (res: any) => {
@@ -44,21 +44,19 @@ export class GeolocationHelper {
                     try {
                         const parsedData = JSON.parse(rawData);
                         if (parsedData.error) {
-                            return Promise.reject();
+                            throw new InsightError("Cannot get geolocation");
                         } else {
-                            buildingObject.lat = parsedData.lat;
-                            buildingObject.lon = parsedData.lon;
-                            return Promise.resolve();
+                            return parsedData;
                         }
                     } catch (e) {
-                        return Promise.reject();
+                        throw new InsightError();
                     }
                 });
             }).on("error", (e: any) => {
-                return Promise.reject();
+                throw new InsightError();
             });
         } catch (e) {
-            return Promise.reject();
+            throw new InsightError();
         }
     }
 }
