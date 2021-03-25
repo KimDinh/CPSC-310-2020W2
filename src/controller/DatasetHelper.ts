@@ -2,6 +2,7 @@ import {InsightDatasetKind, InsightError} from "./IInsightFacade";
 import * as fs from "fs-extra";
 import {Dataset, RoomKeys, SectionKeys} from "./Dataset";
 import * as JSZip from "jszip";
+import {GeolocationHelper} from "./GeolocationHelper";
 const parse5 = require("parse5");
 
 export class DatasetHelper {
@@ -142,33 +143,37 @@ export class DatasetHelper {
     // Code help from https://www.youtube.com/watch?v=pL7-618Vlq8&ab_channel=NoaHeyl
     public static findBuilding(zip: JSZip, tableBody: any): Promise<object[]> {
         let rooms: object[] = [];
-        let roomsPromise = [];
-        let buildingInfo: any[] = [];
+        let roomsPromise: any[] = [];
+        const buildingInfo = {shortname: "", href: "", fullname: "", address: "", lat: 0, lon: 0};
         const buildingCode = "views-field views-field-field-building-code";
         const buildingAddress = "views-field views-field-field-building-address";
         const buildingTitle = "views-field views-field-title";
-        let shortname = "", address = "", fullname = "", href = "", lat = 0, lon = 0;
         try {
             for (const row of tableBody) {
                 if (row.nodeName === "tr" && row.childNodes && row.childNodes.length > 0) {
                     for (const elt of row.childNodes) {
                         if (elt.nodeName === "td" && elt.attrs.length > 0) {
                             if (elt.attrs[0].value === buildingCode && elt.childNodes && elt.childNodes.length > 0) {
-                                shortname = elt.childNodes[0].value.trim();
+                                buildingInfo.shortname = elt.childNodes[0].value.trim();
                             }
                             if (elt.attrs[0].value === buildingTitle && elt.childNodes && elt.childNodes.length > 0) {
-                                href = elt.childNodes[1].attrs[0].value.trim();
+                                buildingInfo.href = elt.childNodes[1].attrs[0].value.trim();
                                 if (elt.childNodes[1].childNodes && elt.childNodes[1].childNodes.length > 0) {
-                                    fullname = elt.childNodes[1].childNodes[0].value.trim();
+                                    buildingInfo.fullname = elt.childNodes[1].childNodes[0].value.trim();
                                 }
                             }
                             if (elt.attrs[0].value === buildingAddress && elt.childNodes && elt.childNodes.length > 0) {
-                                address = elt.childNodes[0].value.trim();
+                                buildingInfo.address = elt.childNodes[0].value.trim();
                             }
                         }
                     }
-                    buildingInfo = [shortname, href, fullname, address, lat, lon];
-                    roomsPromise.push(DatasetHelper.processRooms(zip, buildingInfo));
+                    try {
+                        GeolocationHelper.getLatLon(buildingInfo).then((ret) => {
+                            roomsPromise.push(DatasetHelper.processRooms(zip, buildingInfo));
+                        });
+                    } catch (e) {
+                        // Geolocation errored out, just skip this building as per spec
+                    }
                 }
             }
             return Promise.all(roomsPromise).then((roomsArrays) => {
@@ -182,8 +187,8 @@ export class DatasetHelper {
         }
     }
 
-    private static processRooms(zip: JSZip, buildingInfo: any[]): Promise<object[]> {
-        let path = "rooms/campus/discover/buildings-and-classrooms/" + buildingInfo[0];
+    private static processRooms(zip: JSZip, buildingInfo: any): Promise<object[]> {
+        let path = "rooms/campus/discover/buildings-and-classrooms/" + buildingInfo.shortname;
         let roomsArray: any[] = [];
         try {
             return zip.file(path).async("string").then((buildingHtml: string) => {
@@ -196,13 +201,13 @@ export class DatasetHelper {
                             [RoomKeys.Furniture]: room[1],
                             [RoomKeys.Type]: room[2],
                             [RoomKeys.Number]: room[3],
-                            [RoomKeys.Address]: buildingInfo[3],
-                            [RoomKeys.Fullname]: buildingInfo[2],
-                            [RoomKeys.Shortname]: buildingInfo[0],
-                            [RoomKeys.Name]: buildingInfo[0] + "_" + room[3],
+                            [RoomKeys.Address]: buildingInfo.address,
+                            [RoomKeys.Fullname]: buildingInfo.fullname,
+                            [RoomKeys.Shortname]: buildingInfo.shortname,
+                            [RoomKeys.Name]: buildingInfo.shortname + "_" + room[3],
                             [RoomKeys.Href]: room[4],
-                            [RoomKeys.Lat]: buildingInfo[4],
-                            [RoomKeys.Lon]: buildingInfo[5]
+                            [RoomKeys.Lat]: buildingInfo.lat,
+                            [RoomKeys.Lon]: buildingInfo.lon
                         };
                         roomsArray.push(roomObject);
                     }
