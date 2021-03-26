@@ -96,14 +96,6 @@ export class DatasetHelper {
         return allCurDatasetIds;
     }
 
-    public static parseHTML(htmlString: string): Promise<any> {
-        try {
-            return Promise.resolve(parse5.parse(htmlString));
-        } catch (e) {
-            return Promise.reject(e);
-        }
-    }
-
     public static getBuildings(zip: JSZip, content: string): Promise<object[]> {
         try {
            const parsedIndexHTM = parse5.parse(content);
@@ -142,14 +134,13 @@ export class DatasetHelper {
 
     // Code help from https://www.youtube.com/watch?v=pL7-618Vlq8&ab_channel=NoaHeyl
     public static findBuilding(zip: JSZip, tableBody: any): Promise<object[]> {
-        let rooms: object[] = [];
-        let roomsPromise: any[] = [];
-        const buildingInfo = {shortname: "", href: "", fullname: "", address: "", lat: 0, lon: 0};
+        let rooms: object[] = [], roomsPromise: any[] = [], latLonPromise: any[] = [], buildingArrays: any[] = [];
         const buildingCode = "views-field views-field-field-building-code";
         const buildingAddress = "views-field views-field-field-building-address";
         const buildingTitle = "views-field views-field-title";
         try {
             for (const row of tableBody) {
+                const buildingInfo = {shortname: "", href: "", fullname: "", address: "", lat: 0, lon: 0};
                 if (row.nodeName === "tr" && row.childNodes && row.childNodes.length > 0) {
                     for (const elt of row.childNodes) {
                         if (elt.nodeName === "td" && elt.attrs.length > 0) {
@@ -167,24 +158,28 @@ export class DatasetHelper {
                             }
                         }
                     }
-                    try {
-                        const location = GeolocationHelper.getLatLon(buildingInfo.address);
-                        if (location) {
-                            buildingInfo.lat = location.lat;
-                            buildingInfo.lon = location.lon;
-                            roomsPromise.push(this.processRooms(zip, buildingInfo));
-                        }
-                    } catch (e) {
-                        continue;
-                    }
+                    latLonPromise.push(GeolocationHelper.getLatLon(buildingInfo).then((loc: any) => {
+                        buildingInfo.lat = loc.lat;
+                        buildingInfo.lon = loc.lon;
+                        buildingArrays.push(buildingInfo);
+                    }).catch());
                 }
             }
-            return Promise.all(roomsPromise).then((roomsArrays) => {
-                for (const roomsArray of roomsArrays) {
-                    rooms = rooms.concat(roomsArray);
+            return Promise.all(latLonPromise).then((sth) => {
+                for (const building of buildingArrays) {
+                    try {
+                        roomsPromise.push(this.processRooms(zip, building));
+                    } catch (e) {
+                        // if rooms can't be processed, skip this building
+                    }
                 }
-                return Promise.resolve(rooms);
-            });
+                return Promise.all(roomsPromise).then((roomsArrays) => {
+                    for (const roomsArray of roomsArrays) {
+                        rooms = rooms.concat(roomsArray);
+                    }
+                    return Promise.resolve(rooms);
+                });
+            }).catch();
         } catch (e) {
             return Promise.reject(e);
         }
