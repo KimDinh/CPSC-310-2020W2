@@ -14,7 +14,8 @@
             "ORDER": {
                 "dir": "UP",
                 "keys": [
-                    "sumSeats"
+                    "sumSeats",
+                    "rooms_shortname"
                 ]
             }
         },
