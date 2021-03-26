@@ -272,16 +272,6 @@ describe("InsightFacade Add/Remove/List Dataset", function () {
         return expect(futureResult).to.eventually.deep.equal(expected);
     });
 
-    it("Should not add a dataset whose folder contains only another folder", function () {
-        const id: string = "courses12";
-        const futureResult: Promise<string[]> = insightFacade.addDataset(
-            id,
-            datasets[id],
-            InsightDatasetKind.Courses,
-        );
-        return expect(futureResult).to.be.rejectedWith(InsightError);
-    });
-
     it("Should not add a dataset whose id does not exist", function () {
         const id: string = "courses100";
         const futureResult: Promise<string[]> = insightFacade.addDataset(

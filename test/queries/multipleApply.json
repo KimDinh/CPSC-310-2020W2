@@ -17,7 +17,8 @@
                 "dir": "UP",
                 "keys": [
                     "maxSeats",
-                    "sumSeats"
+                    "sumSeats",
+                    "rooms_shortname"
                 ]
             }
         },
