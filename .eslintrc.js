@@ -13,6 +13,7 @@ module.exports = {
         "@typescript-eslint",
         "@typescript-eslint/tslint"
     ],
+    "ignorePatterns": ["frontend/**/*.js"],
     "overrides": [
         {
             "files": ["**/*.spec.ts"],
