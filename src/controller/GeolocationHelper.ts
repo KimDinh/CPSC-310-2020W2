@@ -40,13 +40,17 @@ export class GeolocationHelper {
                         try {
                             const parsedData = JSON.parse(rawData);
                             if (parsedData.error) {
-                                reject (new InsightError("Cannot get geolocation"));
+                                resolve (buildingInfo);
+                                // reject (new InsightError("Cannot get geolocation"));
                                 // throw new InsightError("Cannot get geolocation");
                             } else {
-                               resolve (parsedData);
+                                buildingInfo.lat = parsedData.lat;
+                                buildingInfo.lon = parsedData.lon;
+                                resolve (buildingInfo);
                             }
                         } catch (e) {
-                            reject (new InsightError("Parse error"));
+                            resolve (buildingInfo);
+                            // reject (new InsightError("Parse error"));
                             // throw new InsightError();
                         }
                     });
@@ -56,7 +60,8 @@ export class GeolocationHelper {
                 //     // throw new InsightError();
                 // });
             } catch (e) {
-                reject (e);
+                resolve (buildingInfo);
+                // reject (new InsightError("HTTP Get failed"));
                 // throw new InsightError();
             }
         });

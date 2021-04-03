@@ -158,17 +158,19 @@ export class DatasetHelper {
                             }
                         }
                     }
-                    latLonPromise.push(GeolocationHelper.getLatLon(buildingInfo).then((loc: any) => {
-                        buildingInfo.lat = loc.lat;
-                        buildingInfo.lon = loc.lon;
-                        buildingArrays.push(buildingInfo);
+                    latLonPromise.push(GeolocationHelper.getLatLon(buildingInfo).then((updatedBuildingInfo: any) => {
+                        // buildingInfo.lat = loc.lat;
+                        // buildingInfo.lon = loc.lon;
+                        buildingArrays.push(updatedBuildingInfo);
                     }).catch());
                 }
             }
             return Promise.all(latLonPromise).then((sth) => {
                 for (const building of buildingArrays) {
                     try {
-                        roomsPromise.push(this.processRooms(zip, building));
+                        if (building.lat !== 0) {
+                            roomsPromise.push(this.processRooms(zip, building));
+                        }
                     } catch (e) {
                         // if rooms can't be processed, skip this building
                     }
