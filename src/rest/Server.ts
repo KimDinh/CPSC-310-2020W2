@@ -145,7 +145,7 @@ export default class Server {
         const iF: InsightFacade = new InsightFacade();
         Log.trace("Server::post(..) - params: " + JSON.stringify(req.params));
         try {
-            let promise: any = iF.performQuery(new Buffer(req.body).toString("base64"));
+            let promise: any = iF.performQuery(req.body);
             return promise.then((response: any) => {
                 Log.info("Server::post(..) - responding " + 200);
                 res.json(200, {result: response});
