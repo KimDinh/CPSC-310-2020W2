@@ -101,13 +101,16 @@ export default class Server {
             return promise.then((response: any) => {
                 Log.info("Server::put(..) - responding " + 200);
                 res.json(200, {result: response});
+                return next();
             }).catch((e: any) => {
                 Log.error("Server::put(..) - responding 400");
-                res.json(400, {error: e});
+                res.json(400, {error: e.message});
+                return next();
             });
         } catch (err) {
             Log.error("Server::put(..) - responding 400");
-            res.json(400, {error: err});
+            res.json(400, {error: err.message});
+            return next();
         }
         return next();
     }
@@ -120,16 +123,20 @@ export default class Server {
             return promise.then((response: any) => {
                 Log.info("Server::delete(..) - responding " + 200);
                 res.json(200, {result: response});
+                return next();
             }).catch((e: NotFoundError) => {
                 Log.error("Server::delete(..) - responding 404");
-                res.json(404, {error: e});
+                res.json(404, {error: e.message});
+                return next();
             }).catch((e: InsightError) => {
                 Log.error("Server::delete(..) - responding 400");
-                res.json(400, {error: e});
+                res.json(400, {error: e.message});
+                return next();
             });
         } catch (err) {
             Log.error("Server::delete(..) - responding 400");
-            res.json(400, {error: err});
+            res.json(400, {error: err.message});
+            return next();
         }
         return next();
     }
@@ -142,13 +149,16 @@ export default class Server {
             return promise.then((response: any) => {
                 Log.info("Server::post(..) - responding " + 200);
                 res.json(200, {result: response});
+                return next();
             }).catch((e: any) => {
                 Log.error("Server::post(..) - responding 400");
-                res.json(400, {error: e});
+                res.json(400, {error: e.message});
+                return next();
             });
         } catch (err) {
             Log.error("Server::delete(..) - responding 400");
-            res.json(400, {error: err});
+            res.json(400, {error: err.message});
+            return next();
         }
         return next();
     }
@@ -161,11 +171,14 @@ export default class Server {
             return promise.then((response: any) => {
                 Log.info("Server::get(..) - responding " + 200);
                 res.json(200, {result: response});
+                return next();
             }).catch((e: any) => {
                 Log.error("Server::get(..) - responding 400. Will not do anything");
+                return next();
             });
         } catch (err) {
             Log.error("Server::get(..) - responding 400. Will not do anything");
+            return next();
         }
         return next();
     }
