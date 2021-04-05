@@ -5,6 +5,8 @@
 import fs = require("fs");
 import restify = require("restify");
 import Log from "../Util";
+import InsightFacade from "../controller/InsightFacade";
+import {IInsightFacade, InsightError, NotFoundError} from "../controller/IInsightFacade";
 
 /**
  * This configures the REST endpoints for the server.
@@ -64,6 +66,10 @@ export default class Server {
                 that.rest.get("/echo/:msg", Server.echo);
 
                 // NOTE: your endpoints should go here
+                that.rest.put("/dataset/:id/:kind", Server.put);
+                that.rest.del("/dataset/:id", Server.delete);
+                that.rest.post("/query", Server.post);
+                that.rest.get("/datasets", Server.get);
 
                 // This must be the last endpoint!
                 that.rest.get("/.*", Server.getStatic);
@@ -85,6 +91,83 @@ export default class Server {
                 reject(err);
             }
         });
+    }
+
+    public static put(req: restify.Request, res: restify.Response, next: restify.Next) {
+        const iF: InsightFacade = new InsightFacade();
+        Log.trace("Server::put(..) - params: " + JSON.stringify(req.params));
+        try {
+            let promise: any = iF.addDataset(req.params.id, new Buffer(req.body).toString("base64"), req.params.kind);
+            return promise.then((response: any) => {
+                Log.info("Server::put(..) - responding " + 200);
+                res.json(200, {result: response});
+            }).catch((e: any) => {
+                Log.error("Server::put(..) - responding 400");
+                res.json(400, {error: e});
+            });
+        } catch (err) {
+            Log.error("Server::put(..) - responding 400");
+            res.json(400, {error: err});
+        }
+        return next();
+    }
+
+    public static delete(req: restify.Request, res: restify.Response, next: restify.Next) {
+        const iF: InsightFacade = new InsightFacade();
+        Log.trace("Server::delete(..) - params: " + JSON.stringify(req.params));
+        try {
+            let promise: any = iF.removeDataset(req.params.id);
+            return promise.then((response: any) => {
+                Log.info("Server::delete(..) - responding " + 200);
+                res.json(200, {result: response});
+            }).catch((e: NotFoundError) => {
+                Log.error("Server::delete(..) - responding 404");
+                res.json(404, {error: e});
+            }).catch((e: InsightError) => {
+                Log.error("Server::delete(..) - responding 400");
+                res.json(400, {error: e});
+            });
+        } catch (err) {
+            Log.error("Server::delete(..) - responding 400");
+            res.json(400, {error: err});
+        }
+        return next();
+    }
+
+    public static post(req: restify.Request, res: restify.Response, next: restify.Next) {
+        const iF: InsightFacade = new InsightFacade();
+        Log.trace("Server::post(..) - params: " + JSON.stringify(req.params));
+        try {
+            let promise: any = iF.performQuery(new Buffer(req.body).toString("base64"));
+            return promise.then((response: any) => {
+                Log.info("Server::post(..) - responding " + 200);
+                res.json(200, {result: response});
+            }).catch((e: any) => {
+                Log.error("Server::post(..) - responding 400");
+                res.json(400, {error: e});
+            });
+        } catch (err) {
+            Log.error("Server::delete(..) - responding 400");
+            res.json(400, {error: err});
+        }
+        return next();
+    }
+
+    public static get(req: restify.Request, res: restify.Response, next: restify.Next) {
+        const iF: InsightFacade = new InsightFacade();
+        Log.trace("Server::get(..) - params: " + JSON.stringify(req.params));
+        try {
+            let promise: any = iF.listDatasets();
+            return promise.then((response: any) => {
+                Log.info("Server::get(..) - responding " + 200);
+                res.json(200, {result: response});
+            }).catch((e: any) => {
+                Log.error("Server::get(..) - responding 400. Will not do anything");
+            });
+        } catch (err) {
+            Log.error("Server::get(..) - responding 400. Will not do anything");
+        }
+        return next();
     }
 
     // The next two methods handle the echo service.
