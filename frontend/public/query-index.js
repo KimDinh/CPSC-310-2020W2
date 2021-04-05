@@ -8,4 +8,12 @@
  * 4.) Result is rendered in the reference UI by calling CampusExplorer.renderResult with the response from the endpoint as argument
  */
 
-// TODO: implement!
+// Code taken from https://www.w3schools.com/jsref/met_element_addeventlistener.asp with adaptations
+document.getElementById("submit-button").addEventListener("click", () => {
+    let query = CampusExplorer.buildQuery();
+    CampusExplorer.sendQuery(query).then((result) => {
+        CampusExplorer.renderResult(result);
+    }).catch((error) => {
+        CampusExplorer.renderResult(error);
+    });
+});
